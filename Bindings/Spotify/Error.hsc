@@ -39,7 +39,6 @@ module Bindings.Spotify.Error
   , sp_error_system_failure
 
   , c_sp_error_message
-  , sp_error_message
 ) where
 
 -- hiding unsafePerformIO in Foreign since it is deprecated
@@ -93,6 +92,3 @@ newtype Sp_Error = Sp_Error { unSp_Error :: CInt }
 
 foreign import ccall "libspotify/api.h sp_error_message"
   c_sp_error_message :: Sp_Error -> CString
-
-sp_error_message :: Sp_Error -> String
-sp_error_message = unsafePerformIO . peekCString . c_sp_error_message
