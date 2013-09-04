@@ -1,5 +1,46 @@
 module Bindings.Spotify.Error
-where
+  ( Sp_Error(..)
+
+  , sp_error_ok
+  , sp_error_bad_api_version
+  , sp_error_api_initialization_failed
+  , sp_error_track_not_playable
+  , sp_error_bad_application_key
+  , sp_error_bad_username_or_password
+  , sp_error_user_banned
+  , sp_error_unable_to_contact_server
+  , sp_error_client_too_old
+  , sp_error_other_permanent
+  , sp_error_bad_user_agent
+  , sp_error_missing_callback
+  , sp_error_invalid_indata
+  , sp_error_index_out_of_range
+  , sp_error_user_needs_premium
+  , sp_error_other_transient
+  , sp_error_is_loading
+  , sp_error_no_stream_available
+  , sp_error_permission_denied
+  , sp_error_inbox_is_full
+  , sp_error_no_cache
+  , sp_error_no_such_user
+  , sp_error_no_credentials
+  , sp_error_network_disabled
+  , sp_error_invalid_device_id
+  , sp_error_cant_open_trace_file
+  , sp_error_application_banned
+  , sp_error_offline_too_many_tracks
+  , sp_error_offline_disk_cache
+  , sp_error_offline_expired
+  , sp_error_offline_not_allowed
+  , sp_error_offline_license_lost
+  , sp_error_offline_license_error
+  , sp_error_lastfm_auth_error
+  , sp_error_invalid_argument
+  , sp_error_system_failure
+
+  , c_sp_error_message
+  , sp_error_message
+) where
 
 -- hiding unsafePerformIO in Foreign since it is deprecated
 import Foreign hiding (unsafePerformIO)
