@@ -52,7 +52,7 @@ instance Storable Sp_AudioFormat where
   alignment _ = #alignment sp_audioformat
   peek ptr =
     Sp_AudioFormat
-	  <$> (#peek sp_audioformat, sample_type) ptr
+      <$> (#peek sp_audioformat, sample_type) ptr
       <*> (#peek sp_audioformat, sample_rate) ptr
       <*> (#peek sp_audioformat, channels) ptr
   poke ptr audioFormat = do
