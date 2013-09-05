@@ -129,3 +129,21 @@ newtype Sp_Image_Size = Sp_Image_Size { unSp_Image_Size :: CInt }
   , sp_image_size_small  = SP_IMAGE_SIZE_SMALL
   , sp_image_size_large  = SP_IMAGE_SIZE_LARGE
   }
+
+data Sp_Audio_Buffer_Stats = Sp_Audio_Buffer_Stats {
+    samples :: CInt
+  , stutter :: CInt
+  } deriving (Show)
+
+type Sp_Audio_Buffer_StatsPtr = Ptr Sp_Audio_Buffer_Stats
+
+instance Storable Sp_Audio_Buffer_Stats where
+  sizeOf _ = #size sp_audio_buffer_stats
+  alignment _ = #alignment sp_audio_buffer_stats
+  peek ptr =
+    Sp_Audio_Buffer_Stats
+      <$> (#peek sp_audio_buffer_stats, samples) ptr
+      <*> (#peek sp_audio_buffer_stats, stutter) ptr
+  poke ptr audioBufferStats = do
+    (#poke sp_audio_buffer_stats, samples) ptr (samples audioBufferStats)
+    (#poke sp_audio_buffer_stats, stutter) ptr (stutter audioBufferStats)
