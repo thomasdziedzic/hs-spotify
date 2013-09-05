@@ -158,8 +158,8 @@ instance Storable Sp_Subscribers where
   alignment _ = #alignment sp_subscribers
   peek ptr =
     Sp_Subscribers
-	  <$> (#peek sp_subscribers, count) ptr
-	  <*> (#peek sp_subscribers, subscribers) ptr
+      <$> (#peek sp_subscribers, count) ptr
+      <*> (#peek sp_subscribers, subscribers) ptr
   poke ptr spSubscribers = do
     (#poke sp_subscribers, count) ptr (count spSubscribers)
     (#poke sp_subscribers, subscribers) ptr (subscribers spSubscribers)
@@ -234,15 +234,15 @@ instance Storable Sp_Offline_Sync_Status where
   alignment _ = #alignment sp_offline_sync_status
   peek ptr =
     Sp_Offline_Sync_Status
-	  <$> (#peek sp_offline_sync_status, queued_tracks) ptr
-	  <*> (#peek sp_offline_sync_status, queued_bytes) ptr
-	  <*> (#peek sp_offline_sync_status, done_tracks) ptr
-	  <*> (#peek sp_offline_sync_status, done_bytes) ptr
-	  <*> (#peek sp_offline_sync_status, copied_tracks) ptr
-	  <*> (#peek sp_offline_sync_status, copied_bytes) ptr
-	  <*> (#peek sp_offline_sync_status, willnotcopy_tracks) ptr
-	  <*> (#peek sp_offline_sync_status, error_tracks) ptr
-	  <*> (#peek sp_offline_sync_status, syncing) ptr
+      <$> (#peek sp_offline_sync_status, queued_tracks) ptr
+      <*> (#peek sp_offline_sync_status, queued_bytes) ptr
+      <*> (#peek sp_offline_sync_status, done_tracks) ptr
+      <*> (#peek sp_offline_sync_status, done_bytes) ptr
+      <*> (#peek sp_offline_sync_status, copied_tracks) ptr
+      <*> (#peek sp_offline_sync_status, copied_bytes) ptr
+      <*> (#peek sp_offline_sync_status, willnotcopy_tracks) ptr
+      <*> (#peek sp_offline_sync_status, error_tracks) ptr
+      <*> (#peek sp_offline_sync_status, syncing) ptr
   poke ptr offlineSyncStatus = do
     (#poke sp_offline_sync_status, queued_tracks) ptr (queued_tracks offlineSyncStatus)
     (#poke sp_offline_sync_status, queued_bytes) ptr (queued_bytes offlineSyncStatus)
