@@ -147,3 +147,109 @@ instance Storable Sp_Audio_Buffer_Stats where
   poke ptr audioBufferStats = do
     (#poke sp_audio_buffer_stats, samples) ptr (samples audioBufferStats)
     (#poke sp_audio_buffer_stats, stutter) ptr (stutter audioBufferStats)
+
+data Sp_Subscribers = Sp_Subscribers {
+    count       :: CUInt
+  , subscribers :: Ptr CString
+  } deriving (Show)
+
+instance Storable Sp_Subscribers where
+  sizeOf _ = #size sp_subscribers
+  alignment _ = #alignment sp_subscribers
+  peek ptr =
+    Sp_Subscribers
+	  <$> (#peek sp_subscribers, count) ptr
+	  <*> (#peek sp_subscribers, subscribers) ptr
+  poke ptr spSubscribers = do
+    (#poke sp_subscribers, count) ptr (count spSubscribers)
+    (#poke sp_subscribers, subscribers) ptr (subscribers spSubscribers)
+
+newtype Sp_Connection_Type = Sp_Connection_Type { unSp_Connection_Type :: CInt }
+  deriving (Show)
+
+#{enum Sp_Connection_Type, Sp_Connection_Type
+  , sp_connection_type_unknown        = SP_CONNECTION_TYPE_UNKNOWN
+  , sp_connection_type_none           = SP_CONNECTION_TYPE_NONE
+  , sp_connection_type_mobile         = SP_CONNECTION_TYPE_MOBILE
+  , sp_connection_type_mobile_roaming = SP_CONNECTION_TYPE_MOBILE_ROAMING
+  , sp_connection_type_wifi           = SP_CONNECTION_TYPE_WIFI
+  , sp_connection_type_wired          = SP_CONNECTION_TYPE_WIRED
+  }
+
+-- TODO connection rules can be combined with a bitwise or operation
+--      need to write a function that does this
+newtype Sp_Connection_Rules = Sp_Connection_Rules { unSp_Connection_Rules :: CInt }
+  deriving (Show)
+
+#{enum Sp_Connection_Rules, Sp_Connection_Rules
+  , sp_connection_rule_network                = SP_CONNECTION_RULE_NETWORK
+  , sp_connection_rule_network_if_roaming     = SP_CONNECTION_RULE_NETWORK_IF_ROAMING
+  , sp_connection_rule_allow_sync_over_mobile = SP_CONNECTION_RULE_ALLOW_SYNC_OVER_MOBILE
+  , sp_connection_rule_allow_sync_over_wifi   = SP_CONNECTION_RULE_ALLOW_SYNC_OVER_WIFI
+  }
+
+newtype Sp_ArtistBrowse_Type = Sp_ArtistBrowse_Type { unSp_ArtistBrowse_Type :: CInt }
+  deriving (Show)
+
+#{enum Sp_ArtistBrowse_Type, Sp_ArtistBrowse_Type
+  , sp_artistbrowse_full      = SP_ARTISTBROWSE_FULL
+  , sp_artistbrowse_no_tracks = SP_ARTISTBROWSE_NO_TRACKS
+  , sp_artistbrowse_no_albums = SP_ARTISTBROWSE_NO_ALBUMS
+  }
+
+newtype Sp_Social_Provider = Sp_Social_Provider { unSp_Social_Provider :: CInt }
+  deriving (Show)
+
+#{enum Sp_Social_Provider, Sp_Social_Provider
+  , sp_social_provider_spotify  = SP_SOCIAL_PROVIDER_SPOTIFY
+  , sp_social_provider_facebook = SP_SOCIAL_PROVIDER_FACEBOOK
+  , sp_social_provider_lastfm   = SP_SOCIAL_PROVIDER_LASTFM
+  }
+
+newtype Sp_Scrobbling_State = Sp_Scrobbling_State { unSp_Scrobbling_State :: CInt }
+  deriving (Show)
+
+#{enum Sp_Scrobbling_State, Sp_Scrobbling_State
+  , sp_scrobbling_state_use_global_setting = SP_SCROBBLING_STATE_USE_GLOBAL_SETTING
+  , sp_scrobbling_state_local_enabled      = SP_SCROBBLING_STATE_LOCAL_ENABLED
+  , sp_scrobbling_state_local_disabled     = SP_SCROBBLING_STATE_LOCAL_DISABLED
+  , sp_scrobbling_state_global_enabled     = SP_SCROBBLING_STATE_GLOBAL_ENABLED
+  , sp_scrobbling_state_global_disabled    = SP_SCROBBLING_STATE_GLOBAL_DISABLED
+  }
+
+data Sp_Offline_Sync_Status = Sp_Offline_Sync_Status {
+    queued_tracks      :: CInt
+  , queued_bytes       :: CUIntMax
+  , done_tracks        :: CInt
+  , done_bytes         :: CUIntMax
+  , copied_tracks      :: CInt
+  , copied_bytes       :: CUIntMax
+  , willnotcopy_tracks :: CInt
+  , error_tracks       :: CInt
+  , syncing            :: CUChar
+  }
+
+instance Storable Sp_Offline_Sync_Status where
+  sizeOf _ = #size sp_offline_sync_status
+  alignment _ = #alignment sp_offline_sync_status
+  peek ptr =
+    Sp_Offline_Sync_Status
+	  <$> (#peek sp_offline_sync_status, queued_tracks) ptr
+	  <*> (#peek sp_offline_sync_status, queued_bytes) ptr
+	  <*> (#peek sp_offline_sync_status, done_tracks) ptr
+	  <*> (#peek sp_offline_sync_status, done_bytes) ptr
+	  <*> (#peek sp_offline_sync_status, copied_tracks) ptr
+	  <*> (#peek sp_offline_sync_status, copied_bytes) ptr
+	  <*> (#peek sp_offline_sync_status, willnotcopy_tracks) ptr
+	  <*> (#peek sp_offline_sync_status, error_tracks) ptr
+	  <*> (#peek sp_offline_sync_status, syncing) ptr
+  poke ptr offlineSyncStatus = do
+    (#poke sp_offline_sync_status, queued_tracks) ptr (queued_tracks offlineSyncStatus)
+    (#poke sp_offline_sync_status, queued_bytes) ptr (queued_bytes offlineSyncStatus)
+    (#poke sp_offline_sync_status, done_tracks) ptr (done_tracks offlineSyncStatus)
+    (#poke sp_offline_sync_status, done_bytes) ptr (done_bytes offlineSyncStatus)
+    (#poke sp_offline_sync_status, copied_tracks) ptr (copied_tracks offlineSyncStatus)
+    (#poke sp_offline_sync_status, copied_bytes) ptr (copied_bytes offlineSyncStatus)
+    (#poke sp_offline_sync_status, willnotcopy_tracks) ptr (willnotcopy_tracks offlineSyncStatus)
+    (#poke sp_offline_sync_status, error_tracks) ptr (error_tracks offlineSyncStatus)
+    (#poke sp_offline_sync_status, syncing) ptr (syncing offlineSyncStatus)
