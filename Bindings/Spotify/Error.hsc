@@ -41,11 +41,8 @@ module Bindings.Spotify.Error
   , c_sp_error_message
 ) where
 
--- hiding unsafePerformIO in Foreign since it is deprecated
-import Foreign hiding (unsafePerformIO)
 import Foreign.C.Types
 import Foreign.C.String
-import System.IO.Unsafe (unsafePerformIO)
 
 #include <libspotify/api.h>
 
