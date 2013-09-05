@@ -87,4 +87,5 @@ unwrapError Sp_ErrorW_Invalid_Argument          = sp_error_invalid_argument
 unwrapError Sp_ErrorW_System_Failure            = sp_error_system_failure
 
 sp_error_message :: Sp_ErrorW -> String
+{-# NOINLINE sp_error_message #-}
 sp_error_message = unsafePerformIO . peekCString . c_sp_error_message . unwrapError
