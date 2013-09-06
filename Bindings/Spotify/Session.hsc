@@ -11,6 +11,9 @@ import Foreign.C.String
 
 import Control.Applicative
 
+import Bindings.Spotify.Error
+import Bindings.Spotify.Struct
+
 #include <libspotify/api.h>
 
 #let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
@@ -253,3 +256,137 @@ instance Storable Sp_Offline_Sync_Status where
     (#poke sp_offline_sync_status, willnotcopy_tracks) ptr (willnotcopy_tracks offlineSyncStatus)
     (#poke sp_offline_sync_status, error_tracks) ptr (error_tracks offlineSyncStatus)
     (#poke sp_offline_sync_status, syncing) ptr (syncing offlineSyncStatus)
+
+data Sp_Session_Callbacks = Sp_Session_Callbacks
+  { logged_in                    :: FunPtr (Ptr Sp_Session -> Sp_Error -> IO ())
+  , logged_out                   :: FunPtr (Ptr Sp_Session -> IO ())
+  , metadata_updated             :: FunPtr (Ptr Sp_Session -> IO ())
+  , connection_error             :: FunPtr (Ptr Sp_Session -> Sp_Error -> IO ())
+  , message_to_user              :: FunPtr (Ptr Sp_Session -> CString -> IO ())
+  , notify_main_thread           :: FunPtr (Ptr Sp_Session -> IO ())
+  , music_delivery               :: FunPtr (Ptr Sp_Session -> Ptr Sp_AudioFormat -> Ptr () -> CInt -> IO CInt)
+  , play_token_lost              :: FunPtr (Ptr Sp_Session -> IO ())
+  , log_message                  :: FunPtr (Ptr Sp_Session -> CString -> IO ())
+  , end_of_track                 :: FunPtr (Ptr Sp_Session -> IO ())
+  , streaming_error              :: FunPtr (Ptr Sp_Session -> Sp_Error -> IO ())
+  , userinfo_updated             :: FunPtr (Ptr Sp_Session -> IO ())
+  , start_playback               :: FunPtr (Ptr Sp_Session -> IO ())
+  , stop_playback                :: FunPtr (Ptr Sp_Session -> IO ())
+  , get_audio_buffer_stats       :: FunPtr (Ptr Sp_Session -> Ptr Sp_Audio_Buffer_Stats -> IO ())
+  , offline_status_updated       :: FunPtr (Ptr Sp_Session -> IO ())
+  , offline_error                :: FunPtr (Ptr Sp_Session -> Sp_Error -> IO ())
+  , credentials_blob_updated     :: FunPtr (Ptr Sp_Session -> CString -> IO ())
+  , connectionstate_updated      :: FunPtr (Ptr Sp_Session -> IO ())
+  , scrobble_error               :: FunPtr (Ptr Sp_Session -> Sp_Error -> IO ())
+  , private_session_mode_changed :: FunPtr (Ptr Sp_Session -> CUChar -> IO ())
+  }
+
+instance Storable Sp_Session_Callbacks where
+  sizeOf _ = #size sp_session_callbacks
+  alignment _ = #alignment sp_session_callbacks
+  peek ptr =
+    Sp_Session_Callbacks
+      <$> (#peek sp_session_callbacks, logged_in) ptr
+      <*> (#peek sp_session_callbacks, logged_out) ptr
+      <*> (#peek sp_session_callbacks, metadata_updated) ptr
+      <*> (#peek sp_session_callbacks, connection_error) ptr
+      <*> (#peek sp_session_callbacks, message_to_user) ptr
+      <*> (#peek sp_session_callbacks, notify_main_thread) ptr
+      <*> (#peek sp_session_callbacks, music_delivery) ptr
+      <*> (#peek sp_session_callbacks, play_token_lost) ptr
+      <*> (#peek sp_session_callbacks, log_message) ptr
+      <*> (#peek sp_session_callbacks, end_of_track) ptr
+      <*> (#peek sp_session_callbacks, streaming_error) ptr
+      <*> (#peek sp_session_callbacks, userinfo_updated) ptr
+      <*> (#peek sp_session_callbacks, start_playback) ptr
+      <*> (#peek sp_session_callbacks, stop_playback) ptr
+      <*> (#peek sp_session_callbacks, get_audio_buffer_stats) ptr
+      <*> (#peek sp_session_callbacks, offline_status_updated) ptr
+      <*> (#peek sp_session_callbacks, offline_error) ptr
+      <*> (#peek sp_session_callbacks, credentials_blob_updated) ptr
+      <*> (#peek sp_session_callbacks, connectionstate_updated) ptr
+      <*> (#peek sp_session_callbacks, scrobble_error) ptr
+      <*> (#peek sp_session_callbacks, private_session_mode_changed) ptr
+  poke ptr sessionCallbacks = do
+    (#poke sp_session_callbacks, logged_in) ptr (logged_in sessionCallbacks)
+    (#poke sp_session_callbacks, logged_out) ptr (logged_out sessionCallbacks)
+    (#poke sp_session_callbacks, metadata_updated) ptr (metadata_updated sessionCallbacks)
+    (#poke sp_session_callbacks, connection_error) ptr (connection_error sessionCallbacks)
+    (#poke sp_session_callbacks, message_to_user) ptr (message_to_user sessionCallbacks)
+    (#poke sp_session_callbacks, notify_main_thread) ptr (notify_main_thread sessionCallbacks)
+    (#poke sp_session_callbacks, music_delivery) ptr (music_delivery sessionCallbacks)
+    (#poke sp_session_callbacks, play_token_lost) ptr (play_token_lost sessionCallbacks)
+    (#poke sp_session_callbacks, log_message) ptr (log_message sessionCallbacks)
+    (#poke sp_session_callbacks, end_of_track) ptr (end_of_track sessionCallbacks)
+    (#poke sp_session_callbacks, streaming_error) ptr (streaming_error sessionCallbacks)
+    (#poke sp_session_callbacks, userinfo_updated) ptr (userinfo_updated sessionCallbacks)
+    (#poke sp_session_callbacks, start_playback) ptr (start_playback sessionCallbacks)
+    (#poke sp_session_callbacks, stop_playback) ptr (stop_playback sessionCallbacks)
+    (#poke sp_session_callbacks, get_audio_buffer_stats) ptr (get_audio_buffer_stats sessionCallbacks)
+    (#poke sp_session_callbacks, offline_status_updated) ptr (offline_status_updated sessionCallbacks)
+    (#poke sp_session_callbacks, offline_error) ptr (offline_error sessionCallbacks)
+    (#poke sp_session_callbacks, credentials_blob_updated) ptr (credentials_blob_updated sessionCallbacks)
+    (#poke sp_session_callbacks, connectionstate_updated) ptr (connectionstate_updated sessionCallbacks)
+    (#poke sp_session_callbacks, scrobble_error) ptr (scrobble_error sessionCallbacks)
+    (#poke sp_session_callbacks, private_session_mode_changed) ptr (private_session_mode_changed sessionCallbacks)
+
+data Sp_Session_Config = Sp_Session_Config
+  { api_version                      :: CInt
+  , cache_location                   :: CString
+  , settings_location                :: CString
+  , application_key                  :: Ptr ()
+  , application_key_size             :: CSize
+  , user_agent                       :: CString
+  , callbacks                        :: Ptr Sp_Session_Callbacks
+  , userdata                         :: Ptr ()
+  , compress_playlists               :: CUChar
+  , dont_save_metadata_for_playlists :: CUChar
+  , initially_unload_playlists       :: CUChar
+  , device_id                        :: CString
+  , proxy                            :: CString
+  , proxy_username                   :: CString
+  , proxy_password                   :: CString
+  , ca_certs_filename                :: CString
+  , tracefile                        :: CString
+  }
+
+instance Storable Sp_Session_Config where
+  sizeOf _ = #size sp_session_config
+  alignment _ = #alignment sp_session_config
+  peek ptr =
+    Sp_Session_Config
+      <$> (#peek sp_session_config, api_version) ptr
+      <*> (#peek sp_session_config, cache_location) ptr
+      <*> (#peek sp_session_config, settings_location) ptr
+      <*> (#peek sp_session_config, application_key) ptr
+      <*> (#peek sp_session_config, application_key_size) ptr
+      <*> (#peek sp_session_config, user_agent) ptr
+      <*> (#peek sp_session_config, callbacks) ptr
+      <*> (#peek sp_session_config, userdata) ptr
+      <*> (#peek sp_session_config, compress_playlists) ptr
+      <*> (#peek sp_session_config, dont_save_metadata_for_playlists) ptr
+      <*> (#peek sp_session_config, initially_unload_playlists) ptr
+      <*> (#peek sp_session_config, device_id) ptr
+      <*> (#peek sp_session_config, proxy) ptr
+      <*> (#peek sp_session_config, proxy_username) ptr
+      <*> (#peek sp_session_config, proxy_password) ptr
+      <*> (#peek sp_session_config, ca_certs_filename) ptr
+      <*> (#peek sp_session_config, tracefile) ptr
+  poke ptr sessionConfig = do
+    (#poke sp_session_config, api_version) ptr (api_version sessionConfig)
+    (#poke sp_session_config, cache_location) ptr (cache_location sessionConfig)
+    (#poke sp_session_config, settings_location) ptr (settings_location sessionConfig)
+    (#poke sp_session_config, application_key) ptr (application_key sessionConfig)
+    (#poke sp_session_config, application_key_size) ptr (application_key_size sessionConfig)
+    (#poke sp_session_config, user_agent) ptr (user_agent sessionConfig)
+    (#poke sp_session_config, callbacks) ptr (callbacks sessionConfig)
+    (#poke sp_session_config, userdata) ptr (userdata sessionConfig)
+    (#poke sp_session_config, compress_playlists) ptr (compress_playlists sessionConfig)
+    (#poke sp_session_config, dont_save_metadata_for_playlists) ptr (dont_save_metadata_for_playlists sessionConfig)
+    (#poke sp_session_config, initially_unload_playlists) ptr (initially_unload_playlists sessionConfig)
+    (#poke sp_session_config, device_id) ptr (device_id sessionConfig)
+    (#poke sp_session_config, proxy) ptr (proxy sessionConfig)
+    (#poke sp_session_config, proxy_username) ptr (proxy_username sessionConfig)
+    (#poke sp_session_config, proxy_password) ptr (proxy_password sessionConfig)
+    (#poke sp_session_config, ca_certs_filename) ptr (ca_certs_filename sessionConfig)
+    (#poke sp_session_config, tracefile) ptr (tracefile sessionConfig)
