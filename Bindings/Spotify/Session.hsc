@@ -1,9 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module Bindings.Spotify.Session (
-    Version(..)
-  , spotifyApiVersion
-)where
+module Bindings.Spotify.Session
+where
 
 import Foreign
 import Foreign.C.Types
