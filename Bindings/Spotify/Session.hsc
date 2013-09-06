@@ -98,10 +98,10 @@ newtype Sp_Playlist_Offline_Status = Sp_Playlist_Offline_Status { unSp_Playlist_
   , sp_playlist_offline_status_waiting     = SP_PLAYLIST_OFFLINE_STATUS_WAITING
   }
 
-newtype Sp_Availability = Sp_Availability { unSp_Availability :: CInt }
+newtype Sp_Track_Availability = Sp_Track_Availability { unSp_Availability :: CInt }
   deriving (Show)
 
-#{enum Sp_Availability, Sp_Availability
+#{enum Sp_Track_Availability, Sp_Track_Availability
   , sp_track_availability_unavailable      = SP_TRACK_AVAILABILITY_UNAVAILABLE
   , sp_track_availability_available        = SP_TRACK_AVAILABILITY_AVAILABLE
   , sp_track_availability_not_streamable   = SP_TRACK_AVAILABILITY_NOT_STREAMABLE
