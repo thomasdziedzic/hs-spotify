@@ -5,6 +5,7 @@ import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Struct
 import Bindings.Spotify.Error
 
@@ -14,7 +15,7 @@ foreign import ccall "libspotify/api.h sp_albumbrowse_create"
   c_sp_albumbrowse_create :: Ptr Sp_Session -> Ptr Sp_Album -> FunPtr Albumbrowse_Comblete_CB -> Ptr () -> IO (Ptr Sp_Albumbrowse)
 
 foreign import ccall "libspotify/api.h sp_albumbrowse_is_loaded"
-  c_sp_albumbrowse_is_loaded :: Ptr Sp_Albumbrowse -> IO CUChar
+  c_sp_albumbrowse_is_loaded :: Ptr Sp_Albumbrowse -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_albumbrowse_error"
   c_sp_albumbrowse_error :: Ptr Sp_Albumbrowse -> IO Sp_Error

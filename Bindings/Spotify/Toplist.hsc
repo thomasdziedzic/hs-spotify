@@ -5,6 +5,7 @@ import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Error
 import Bindings.Spotify.Struct
 
@@ -33,7 +34,7 @@ foreign import ccall "libspotify/api.h sp_toplistbrowse_create"
   c_sp_toplistbrowse_create :: Ptr Sp_Session -> Sp_Toplisttype -> Sp_Toplistregion -> CString -> FunPtr Toplistbrowse_Complete_CB -> Ptr () -> IO (Ptr Sp_Toplistbrowse)
 
 foreign import ccall "libspotify/api.h sp_toplistbrowse_is_loaded"
-  c_sp_toplistbrowse_is_loaded :: Ptr Sp_Toplistbrowse -> IO CUChar
+  c_sp_toplistbrowse_is_loaded :: Ptr Sp_Toplistbrowse -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_toplistbrowse_error"
   c_sp_toplistbrowse_error :: Ptr Sp_Toplistbrowse -> IO Sp_Error

@@ -5,12 +5,13 @@ import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Struct
 import Bindings.Spotify.Session
 import Bindings.Spotify.Error
 
 foreign import ccall "libspotify/api.h sp_track_is_loaded"
-  c_sp_track_is_loaded :: Ptr Sp_Track -> IO CUChar
+  c_sp_track_is_loaded :: Ptr Sp_Track -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_track_error"
   c_sp_track_error :: Ptr Sp_Track -> IO Sp_Error
@@ -22,22 +23,22 @@ foreign import ccall "libspotify/api.h sp_track_get_availability"
   c_sp_track_get_availability :: Ptr Sp_Session -> Ptr Sp_Track -> IO Sp_Track_Availability
 
 foreign import ccall "libspotify/api.h sp_track_is_local"
-  c_sp_track_is_local :: Ptr Sp_Session -> Ptr Sp_Track -> IO CUChar
+  c_sp_track_is_local :: Ptr Sp_Session -> Ptr Sp_Track -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_track_is_autolinked"
-  c_sp_track_is_autolinked :: Ptr Sp_Session -> Ptr Sp_Track -> IO CUChar
+  c_sp_track_is_autolinked :: Ptr Sp_Session -> Ptr Sp_Track -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_track_get_playable"
   c_sp_track_get_playable :: Ptr Sp_Session -> Ptr Sp_Track -> IO (Ptr Sp_Track)
 
 foreign import ccall "libspotify/api.h sp_track_is_placeholder"
-  c_sp_track_is_placeholder :: Ptr Sp_Track -> IO CUChar
+  c_sp_track_is_placeholder :: Ptr Sp_Track -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_track_is_starred"
-  c_sp_track_is_starred :: Ptr Sp_Session -> Ptr Sp_Track -> IO CUChar
+  c_sp_track_is_starred :: Ptr Sp_Session -> Ptr Sp_Track -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_track_set_starred"
-  c_sp_track_set_starred :: Ptr Sp_Session -> Ptr (Ptr Sp_Track) -> CInt -> CUChar -> IO Sp_Error
+  c_sp_track_set_starred :: Ptr Sp_Session -> Ptr (Ptr Sp_Track) -> CInt -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_track_num_artists"
   c_sp_track_num_artists :: Ptr Sp_Track -> IO CInt

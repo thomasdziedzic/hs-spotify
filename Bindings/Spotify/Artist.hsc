@@ -5,6 +5,7 @@ import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Struct
 import Bindings.Spotify.Session
 import Bindings.Spotify.Error
@@ -13,10 +14,10 @@ foreign import ccall "libspotify/api.h sp_artist_name"
   c_sp_artist_name :: Ptr Sp_Artist -> IO CString
 
 foreign import ccall "libspotify/api.h sp_artist_is_loaded"
-  c_sp_artist_is_loaded :: Ptr Sp_Artist -> IO CUChar
+  c_sp_artist_is_loaded :: Ptr Sp_Artist -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_artist_portrait"
-  c_sp_artist_portrait :: Ptr Sp_Artist -> Sp_Image_Size -> IO (Ptr CUChar)
+  c_sp_artist_portrait :: Ptr Sp_Artist -> Sp_Image_Size -> IO (Ptr Sp_Byte)
 
 foreign import ccall "libspotify/api.h sp_artist_add_ref"
   c_sp_artist_add_ref :: Ptr Sp_Artist -> IO Sp_Error

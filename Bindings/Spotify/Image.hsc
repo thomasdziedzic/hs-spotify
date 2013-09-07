@@ -4,6 +4,7 @@ where
 import Foreign
 import Foreign.C.Types
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Struct
 import Bindings.Spotify.Error
 
@@ -20,7 +21,7 @@ newtype Sp_Imageformat = Sp_Imageformat { unSp_Imageformat :: CInt }
 type Image_Loaded_CB = Ptr Sp_Image -> Ptr () -> IO ()
 
 foreign import ccall "libspotify/api.h sp_image_create"
-  c_sp_image_create :: Ptr Sp_Session -> Ptr CUChar -> IO (Ptr Sp_Image)
+  c_sp_image_create :: Ptr Sp_Session -> Ptr Sp_Byte -> IO (Ptr Sp_Image)
 
 foreign import ccall "libspotify/api.h sp_image_create_from_link"
   c_sp_image_create_from_link :: Ptr Sp_Session -> Ptr Sp_Link -> IO (Ptr Sp_Image)
@@ -32,7 +33,7 @@ foreign import ccall "libspotify/api.h sp_image_remove_load_callback"
   c_sp_image_remove_load_callback :: Ptr Sp_Image -> FunPtr Image_Loaded_CB -> Ptr () -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_image_is_loaded"
-  c_sp_image_is_loaded :: Ptr Sp_Image -> IO CUChar
+  c_sp_image_is_loaded :: Ptr Sp_Image -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_image_error"
   c_sp_image_error :: Ptr Sp_Image -> IO Sp_Error
@@ -44,7 +45,7 @@ foreign import ccall "libspotify/api.h sp_image_data"
   c_sp_image_data :: Ptr Sp_Image -> Ptr CSize -> IO (Ptr ())
 
 foreign import ccall "libspotify/api.h sp_image_image_id"
-  c_sp_image_image_id :: Ptr Sp_Image -> IO (Ptr CUChar)
+  c_sp_image_image_id :: Ptr Sp_Image -> IO (Ptr Sp_Byte)
 
 foreign import ccall "libspotify/api.h sp_image_add_ref"
   c_sp_image_add_ref :: Ptr Sp_Image -> IO Sp_Error

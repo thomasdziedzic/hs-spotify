@@ -5,6 +5,7 @@ import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Struct
 import Bindings.Spotify.Session
 import Bindings.Spotify.Error
@@ -22,16 +23,16 @@ newtype Sp_Albumtype = Sp_Albumtype { unSp_Albumtype :: CInt }
   }
 
 foreign import ccall "libspotify/api.h sp_album_is_loaded"
-  c_sp_album_is_loaded :: Ptr Sp_Album -> IO CUChar
+  c_sp_album_is_loaded :: Ptr Sp_Album -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_album_is_available"
-  c_sp_album_is_available :: Ptr Sp_Album -> IO CUChar
+  c_sp_album_is_available :: Ptr Sp_Album -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_album_artist"
   c_sp_album_artist :: Ptr Sp_Album -> IO (Ptr Sp_Artist)
 
 foreign import ccall "libspotify/api.h sp_album_cover"
-  c_sp_album_cover :: Ptr Sp_Album -> Sp_Image_Size -> IO (Ptr CUChar)
+  c_sp_album_cover :: Ptr Sp_Album -> Sp_Image_Size -> IO (Ptr Sp_Byte)
 
 foreign import ccall "libspotify/api.h sp_album_name"
   c_sp_album_name :: Ptr Sp_Album -> IO CString

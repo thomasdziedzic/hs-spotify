@@ -7,6 +7,7 @@ import Foreign.C.String
 
 import Control.Applicative
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Error
 import Bindings.Spotify.Struct
 
@@ -225,7 +226,7 @@ data Sp_Offline_Sync_Status = Sp_Offline_Sync_Status {
   , copied_bytes       :: CUIntMax
   , willnotcopy_tracks :: CInt
   , error_tracks       :: CInt
-  , syncing            :: CUChar
+  , syncing            :: Sp_Bool
   }
 
 instance Storable Sp_Offline_Sync_Status where
@@ -274,7 +275,7 @@ data Sp_Session_Callbacks = Sp_Session_Callbacks
   , credentials_blob_updated     :: FunPtr (Ptr Sp_Session -> CString -> IO ())
   , connectionstate_updated      :: FunPtr (Ptr Sp_Session -> IO ())
   , scrobble_error               :: FunPtr (Ptr Sp_Session -> Sp_Error -> IO ())
-  , private_session_mode_changed :: FunPtr (Ptr Sp_Session -> CUChar -> IO ())
+  , private_session_mode_changed :: FunPtr (Ptr Sp_Session -> Sp_Bool -> IO ())
   }
 
 instance Storable Sp_Session_Callbacks where
@@ -335,9 +336,9 @@ data Sp_Session_Config = Sp_Session_Config
   , user_agent                       :: CString
   , callbacks                        :: Ptr Sp_Session_Callbacks
   , userdata                         :: Ptr ()
-  , compress_playlists               :: CUChar
-  , dont_save_metadata_for_playlists :: CUChar
-  , initially_unload_playlists       :: CUChar
+  , compress_playlists               :: Sp_Bool
+  , dont_save_metadata_for_playlists :: Sp_Bool
+  , initially_unload_playlists       :: Sp_Bool
   , device_id                        :: CString
   , proxy                            :: CString
   , proxy_username                   :: CString
@@ -394,7 +395,7 @@ foreign import ccall "libspotify/api.h sp_session_release"
   c_sp_session_release :: Ptr (Ptr Sp_Session) -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_login"
-  c_sp_session_login :: Ptr Sp_Session -> CString -> CString -> CUChar -> CString -> IO Sp_Error
+  c_sp_session_login :: Ptr Sp_Session -> CString -> CString -> Sp_Bool -> CString -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_relogin"
   c_sp_session_relogin :: Ptr Sp_Session -> IO Sp_Error
@@ -436,7 +437,7 @@ foreign import ccall "libspotify/api.h sp_session_player_seek"
   c_sp_session_player_seek :: Ptr Sp_Session -> CInt -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_player_play"
-  c_sp_session_player_play :: Ptr Sp_Session -> CUChar -> IO Sp_Error
+  c_sp_session_player_play :: Ptr Sp_Session -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_player_unload"
   c_sp_session_player_unload :: Ptr Sp_Session -> IO Sp_Error
@@ -463,19 +464,19 @@ foreign import ccall "libspotify/api.h sp_session_preferred_bitrate"
   c_sp_session_preferred_bitrate :: Ptr Sp_Session -> Sp_Bitrate -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_preferred_offline_bitrate"
-  c_sp_session_preferred_offline_bitrate :: Ptr Sp_Session -> Sp_Bitrate -> CUChar -> IO Sp_Error
+  c_sp_session_preferred_offline_bitrate :: Ptr Sp_Session -> Sp_Bitrate -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_get_volume_normalization"
-  c_sp_session_get_volume_normalization :: Ptr Sp_Session -> IO CUChar
+  c_sp_session_get_volume_normalization :: Ptr Sp_Session -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_session_set_volume_normalization"
-  c_sp_session_set_volume_normalization :: Ptr Sp_Session -> CUChar -> IO Sp_Error
+  c_sp_session_set_volume_normalization :: Ptr Sp_Session -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_set_private_session"
-  c_sp_session_set_private_session :: Ptr Sp_Session -> CUChar -> IO Sp_Error
+  c_sp_session_set_private_session :: Ptr Sp_Session -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_is_private_session"
-  c_sp_session_is_private_session :: Ptr Sp_Session -> IO CUChar
+  c_sp_session_is_private_session :: Ptr Sp_Session -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_session_set_scrobbling"
   c_sp_session_set_scrobbling :: Ptr Sp_Session -> Sp_Social_Provider -> Sp_Scrobbling_State -> IO Sp_Error
@@ -484,7 +485,7 @@ foreign import ccall "libspotify/api.h sp_session_is_scrobbling"
   c_sp_session_is_scrobbling :: Ptr Sp_Session -> Sp_Social_Provider -> Ptr Sp_Scrobbling_State -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_is_scrobbling_possible"
-  c_sp_session_is_scrobbling_possible :: Ptr Sp_Session -> Sp_Social_Provider -> Ptr CUChar -> IO Sp_Error
+  c_sp_session_is_scrobbling_possible :: Ptr Sp_Session -> Sp_Social_Provider -> Ptr Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_session_set_social_credentials"
   c_sp_session_set_social_credentials :: Ptr Sp_Session -> Sp_Social_Provider -> CString -> CString -> IO Sp_Error
@@ -502,7 +503,7 @@ foreign import ccall "libspotify/api.h sp_offline_num_playlists"
   c_sp_offline_num_playlists :: Ptr Sp_Session -> IO CInt
 
 foreign import ccall "libspotify/api.h sp_offline_sync_get_status"
-  c_sp_offline_sync_get_status :: Ptr Sp_Session -> Ptr Sp_Offline_Sync_Status -> IO CUChar
+  c_sp_offline_sync_get_status :: Ptr Sp_Session -> Ptr Sp_Offline_Sync_Status -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_offline_time_left"
   c_sp_offline_time_left :: Ptr Sp_Session -> IO CInt

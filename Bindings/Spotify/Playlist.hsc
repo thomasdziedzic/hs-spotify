@@ -7,6 +7,7 @@ import Foreign.C.String
 
 import Control.Applicative
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Error
 import Bindings.Spotify.Session
 import Bindings.Spotify.Struct
@@ -21,12 +22,12 @@ data Sp_Playlist_Callbacks = Sp_Playlist_Callbacks
   , tracks_moved                :: FunPtr (Ptr Sp_Playlist -> Ptr CInt -> CInt -> CInt -> Ptr () -> IO ())
   , playlist_renamed            :: FunPtr (Ptr Sp_Playlist -> Ptr () -> IO ())
   , playlist_state_changed      :: FunPtr (Ptr Sp_Playlist -> Ptr () -> IO ())
-  , playlist_update_in_progress :: FunPtr (Ptr Sp_Playlist -> CUChar -> Ptr () -> IO ())
+  , playlist_update_in_progress :: FunPtr (Ptr Sp_Playlist -> Sp_Bool -> Ptr () -> IO ())
   , playlist_metadata_updated   :: FunPtr (Ptr Sp_Playlist -> Ptr () -> IO ())
   , track_created_changed       :: FunPtr (Ptr Sp_Playlist -> CInt -> Ptr Sp_User -> CInt -> Ptr () -> IO ())
-  , track_seen_changed          :: FunPtr (Ptr Sp_Playlist -> CInt -> CUChar -> Ptr () -> IO ())
+  , track_seen_changed          :: FunPtr (Ptr Sp_Playlist -> CInt -> Sp_Bool -> Ptr () -> IO ())
   , description_changed         :: FunPtr (Ptr Sp_Playlist -> CString -> Ptr () -> IO ())
-  , image_changed               :: FunPtr (Ptr Sp_Playlist -> Ptr CUChar -> Ptr () -> IO ())
+  , image_changed               :: FunPtr (Ptr Sp_Playlist -> Ptr Sp_Byte -> Ptr () -> IO ())
   , track_message_changed       :: FunPtr (Ptr Sp_Playlist -> CInt -> CString -> Ptr () -> IO ())
   , subscribers_changed         :: FunPtr (Ptr Sp_Playlist -> Ptr () -> IO ())
   }
@@ -65,7 +66,7 @@ instance Storable Sp_Playlist_Callbacks where
     (#poke sp_playlist_callbacks, subscribers_changed) ptr (subscribers_changed playlistCallbacks)
 
 foreign import ccall "libspotify/api.h sp_playlist_is_loaded"
-  c_sp_playlist_is_loaded :: Ptr Sp_Playlist -> IO CUChar
+  c_sp_playlist_is_loaded :: Ptr Sp_Playlist -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_playlist_add_callbacks"
   c_sp_playlist_add_callbacks :: Ptr Sp_Playlist -> Ptr Sp_Playlist_Callbacks -> Ptr () -> IO Sp_Error
@@ -86,10 +87,10 @@ foreign import ccall "libspotify/api.h sp_playlist_track_creator"
   c_sp_playlist_track_creator :: Ptr Sp_Playlist -> CInt -> IO (Ptr Sp_User)
 
 foreign import ccall "libspotify/api.h sp_playlist_track_seen"
-  c_sp_playlist_track_seen :: Ptr Sp_Playlist -> CInt -> IO CUChar
+  c_sp_playlist_track_seen :: Ptr Sp_Playlist -> CInt -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_playlist_track_set_seen"
-  c_sp_playlist_track_set_seen :: Ptr Sp_Playlist -> CInt -> CUChar -> IO Sp_Error
+  c_sp_playlist_track_set_seen :: Ptr Sp_Playlist -> CInt -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlist_track_message"
   c_sp_playlist_track_message :: Ptr Sp_Playlist -> CInt -> IO CString
@@ -104,22 +105,22 @@ foreign import ccall "libspotify/api.h sp_playlist_owner"
   c_sp_playlist_owner :: Ptr Sp_Playlist -> IO (Ptr Sp_User)
 
 foreign import ccall "libspotify/api.h sp_playlist_is_collaborative"
-  c_sp_playlist_is_collaborative :: Ptr Sp_Playlist -> IO CUChar
+  c_sp_playlist_is_collaborative :: Ptr Sp_Playlist -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_playlist_set_collaborative"
-  c_sp_playlist_set_collaborative :: Ptr Sp_Playlist -> CUChar -> IO Sp_Error
+  c_sp_playlist_set_collaborative :: Ptr Sp_Playlist -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlist_set_autolink_tracks"
-  c_sp_playlist_set_autolink_tracks :: Ptr Sp_Playlist -> CUChar -> IO Sp_Error
+  c_sp_playlist_set_autolink_tracks :: Ptr Sp_Playlist -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlist_get_description"
   c_sp_playlist_get_description :: Ptr Sp_Playlist -> IO CString
 
 foreign import ccall "libspotify/api.h sp_playlist_get_image"
-  c_sp_playlist_get_image :: Ptr Sp_Playlist -> Ptr CUChar -> IO CUChar
+  c_sp_playlist_get_image :: Ptr Sp_Playlist -> Ptr Sp_Byte -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_playlist_has_pending_changes"
-  c_sp_playlist_has_pending_changes :: Ptr Sp_Playlist -> IO CUChar
+  c_sp_playlist_has_pending_changes :: Ptr Sp_Playlist -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_playlist_add_tracks"
   c_sp_playlist_add_tracks :: Ptr Sp_Playlist -> Ptr (Ptr Sp_Track) -> CInt -> CInt -> Ptr Sp_Session -> IO Sp_Error
@@ -143,16 +144,16 @@ foreign import ccall "libspotify/api.h sp_playlist_update_subscribers"
   c_sp_playlist_update_subscribers :: Ptr Sp_Session -> Ptr Sp_Playlist -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlist_is_in_ram"
-  c_sp_playlist_is_in_ram :: Ptr Sp_Session -> Ptr Sp_Playlist -> IO CUChar
+  c_sp_playlist_is_in_ram :: Ptr Sp_Session -> Ptr Sp_Playlist -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_playlist_set_in_ram"
-  c_sp_playlist_set_in_ram :: Ptr Sp_Session -> Ptr Sp_Playlist -> CUChar -> IO Sp_Error
+  c_sp_playlist_set_in_ram :: Ptr Sp_Session -> Ptr Sp_Playlist -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlist_create"
   c_sp_playlist_create :: Ptr Sp_Session -> Ptr Sp_Link -> IO (Ptr Sp_Playlist)
 
 foreign import ccall "libspotify/api.h sp_playlist_set_offline_mode"
-  c_sp_playlist_set_offline_mode :: Ptr Sp_Session -> Ptr Sp_Playlist -> CUChar -> IO Sp_Error
+  c_sp_playlist_set_offline_mode :: Ptr Sp_Session -> Ptr Sp_Playlist -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlist_get_offline_status"
   c_sp_playlist_get_offline_status :: Ptr Sp_Session -> Ptr Sp_Playlist -> IO Sp_Playlist_Offline_Status
@@ -198,7 +199,7 @@ foreign import ccall "libspotify/api.h sp_playlistcontainer_num_playlists"
   c_sp_playlistcontainer_num_playlists :: Ptr Sp_Playlistcontainer -> IO CInt
 
 foreign import ccall "libspotify/api.h sp_playlistcontainer_is_loaded"
-  c_sp_playlistcontainer_is_loaded :: Ptr Sp_Playlistcontainer -> IO CUChar
+  c_sp_playlistcontainer_is_loaded :: Ptr Sp_Playlistcontainer -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_playlistcontainer_playlist"
   c_sp_playlistcontainer_playlist :: Ptr Sp_Playlistcontainer -> CInt -> IO (Ptr Sp_Playlist)
@@ -222,7 +223,7 @@ foreign import ccall "libspotify/api.h sp_playlistcontainer_remove_playlist"
   c_sp_playlistcontainer_remove_playlist :: Ptr Sp_Playlistcontainer -> CInt -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlistcontainer_move_playlist"
-  c_sp_playlistcontainer_move_playlist :: Ptr Sp_Playlistcontainer -> CInt -> CInt -> CUChar -> IO Sp_Error
+  c_sp_playlistcontainer_move_playlist :: Ptr Sp_Playlistcontainer -> CInt -> CInt -> Sp_Bool -> IO Sp_Error
 
 foreign import ccall "libspotify/api.h sp_playlistcontainer_add_folder"
   c_sp_playlistcontainer_add_folder :: Ptr Sp_Playlistcontainer -> CInt -> CString -> IO Sp_Error

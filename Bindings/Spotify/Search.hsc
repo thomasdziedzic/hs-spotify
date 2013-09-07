@@ -5,6 +5,7 @@ import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Struct
 import Bindings.Spotify.Session
 import Bindings.Spotify.Error
@@ -15,7 +16,7 @@ foreign import ccall "libspotify/api.h sp_search_create"
   c_sp_search_create :: Ptr Sp_Session -> CString -> CInt -> CInt -> CInt -> CInt -> CInt -> CInt -> CInt -> CInt -> Sp_Search_Type -> FunPtr Search_Complete_CB -> Ptr () -> IO (Ptr Sp_Search)
 
 foreign import ccall "libspotify/api.h sp_search_is_loaded"
-  c_sp_search_is_loaded :: Ptr Sp_Search -> IO CUChar
+  c_sp_search_is_loaded :: Ptr Sp_Search -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_search_error"
   c_sp_search_error :: Ptr Sp_Search -> IO Sp_Error

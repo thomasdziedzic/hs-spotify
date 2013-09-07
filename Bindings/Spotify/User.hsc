@@ -5,6 +5,7 @@ import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 
+import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Error
 import Bindings.Spotify.Struct
 
@@ -27,7 +28,7 @@ foreign import ccall "libspotify/api.h sp_user_display_name"
   c_sp_user_display_name :: Ptr Sp_User -> IO CString
 
 foreign import ccall "libspotify/api.h sp_user_is_loaded"
-  c_sp_user_is_loaded :: Ptr Sp_User -> IO CUChar
+  c_sp_user_is_loaded :: Ptr Sp_User -> IO Sp_Bool
 
 foreign import ccall "libspotify/api.h sp_user_add_ref"
   c_sp_user_add_ref :: Ptr Sp_User -> IO Sp_Error
