@@ -1,5 +1,3 @@
 low level bindings
 
-1) define Sp_Bool
-2) define Sp_Byte
-3) implement #define SP_TOPLIST_REGION(a, b) ((a) << 8 | (b))
+1) implement #define SP_TOPLIST_REGION(a, b) ((a) << 8 | (b))
