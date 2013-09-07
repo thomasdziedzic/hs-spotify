@@ -10,6 +10,8 @@ import Foreign.C.String
 
 import Bindings.Spotify.Error
 
+import Control.Monad
+
 data Sp_ErrorW =
     Sp_ErrorW_Ok
   | Sp_ErrorW_Bad_Api_Version
@@ -88,4 +90,4 @@ unwrapError Sp_ErrorW_System_Failure            = sp_error_system_failure
 
 sp_error_message :: Sp_ErrorW -> String
 {-# NOINLINE sp_error_message #-}
-sp_error_message = unsafePerformIO . peekCString . c_sp_error_message . unwrapError
+sp_error_message = unsafePerformIO . (peekCString <=< c_sp_error_message) . unwrapError

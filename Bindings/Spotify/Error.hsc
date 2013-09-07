@@ -88,4 +88,4 @@ newtype Sp_Error = Sp_Error { unSp_Error :: CInt }
   }
 
 foreign import ccall "libspotify/api.h sp_error_message"
-  c_sp_error_message :: Sp_Error -> CString
+  c_sp_error_message :: Sp_Error -> IO CString
