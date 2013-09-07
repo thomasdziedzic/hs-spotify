@@ -1,5 +1,3 @@
-{-# LANGUAGE EmptyDataDecls #-}
-
 module Bindings.Spotify.Struct (
     Sp_Session
   , Sp_Track

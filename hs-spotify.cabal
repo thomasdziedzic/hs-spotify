@@ -38,6 +38,8 @@ Library
     libspotify == 12.1.51
   default-language:
     Haskell2010
+  extensions:
+    EmptyDataDecls
 
 source-repository head
   type: git
