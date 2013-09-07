@@ -20,6 +20,9 @@ newtype Sp_Toplisttype = Sp_Toplisttype { unSp_Toplisttype :: CInt }
   , sp_toplist_type_tracks  = SP_TOPLIST_TYPE_TRACKS
   }
 
+sp_toplist_region :: CChar -> CChar -> CInt
+sp_toplist_region _ _ = undefined
+
 newtype Sp_Toplistregion = Sp_Toplistregion { unSp_Toplistregion :: CInt }
   deriving (Show)
 
