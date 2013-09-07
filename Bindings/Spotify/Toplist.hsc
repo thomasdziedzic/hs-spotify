@@ -6,7 +6,6 @@ import Foreign.C.Types
 import Foreign.C.String
 
 import Bindings.Spotify.Error
-import Bindings.Spotify.Session
 import Bindings.Spotify.Struct
 
 #include <libspotify/api.h>

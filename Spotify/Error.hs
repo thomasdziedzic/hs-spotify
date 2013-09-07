@@ -4,7 +4,6 @@ module Spotify.Error
 ) where
 
 -- hiding unsafePerformIO in Foreign since it is deprecated
-import Prelude hiding (unsafePerformIO)
 import System.IO.Unsafe (unsafePerformIO)
 import Foreign.C.String
 

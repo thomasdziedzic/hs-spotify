@@ -6,7 +6,6 @@ import Foreign.C.Types
 import Foreign.C.String
 
 import Bindings.Spotify.Struct
-import Bindings.Spotify.Session
 import Bindings.Spotify.Error
 
 type Albumbrowse_Comblete_CB = Ptr Sp_Albumbrowse -> Ptr () -> IO ()

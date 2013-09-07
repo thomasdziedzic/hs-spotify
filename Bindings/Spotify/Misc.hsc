@@ -1,7 +1,6 @@
 module Bindings.Spotify.Misc
 where
 
-import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 

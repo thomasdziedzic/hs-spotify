@@ -6,7 +6,6 @@ import Foreign.C.Types
 import Foreign.C.String
 
 import Bindings.Spotify.Error
-import Bindings.Spotify.Session
 import Bindings.Spotify.Struct
 
 type Inboxpost_Complete_CB = Ptr Sp_Inbox -> Ptr () -> IO ()

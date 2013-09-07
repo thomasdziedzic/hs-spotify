@@ -3,10 +3,8 @@ where
 
 import Foreign
 import Foreign.C.Types
-import Foreign.C.String
 
 import Bindings.Spotify.Struct
-import Bindings.Spotify.Session
 import Bindings.Spotify.Error
 
 #include <libspotify/api.h>
