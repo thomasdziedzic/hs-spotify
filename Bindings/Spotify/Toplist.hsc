@@ -1,4 +1,4 @@
-module Bindings.Spotify.User
+module Bindings.Spotify.Toplist
 where
 
 import Foreign
