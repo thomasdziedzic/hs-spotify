@@ -1,4 +1,5 @@
 *.swp
+dist/
 
 Bindings/Spotify/Album.hs
 Bindings/Spotify/AlbumBrowse.hs
