@@ -1,0 +1,17 @@
+*.swp
+
+Bindings/Spotify/Album.hs
+Bindings/Spotify/AlbumBrowse.hs
+Bindings/Spotify/Artist.hs
+Bindings/Spotify/ArtistBrowse.hs
+Bindings/Spotify/Error.hs
+Bindings/Spotify/Image.hs
+Bindings/Spotify/Inbox.hs
+Bindings/Spotify/Link.hs
+Bindings/Spotify/Misc.hs
+Bindings/Spotify/Playlist.hs
+Bindings/Spotify/Search.hs
+Bindings/Spotify/Session.hs
+Bindings/Spotify/Toplist.hs
+Bindings/Spotify/Track.hs
+Bindings/Spotify/User.hs
