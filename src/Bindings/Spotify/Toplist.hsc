@@ -9,6 +9,8 @@ import Bindings.Spotify.CommonTypes
 import Bindings.Spotify.Error
 import Bindings.Spotify.Struct
 
+import Data.Char (ord)
+
 #include <libspotify/api.h>
 
 newtype Sp_Toplisttype = Sp_Toplisttype { unSp_Toplisttype :: CInt }
@@ -21,7 +23,9 @@ newtype Sp_Toplisttype = Sp_Toplisttype { unSp_Toplisttype :: CInt }
   }
 
 sp_toplist_region :: CChar -> CChar -> CInt
-sp_toplist_region _ _ = undefined
+sp_toplist_region a b = fromIntegral ((ccharOrd a) `shiftL`  8 .|. (ccharOrd b))
+  where
+    ccharOrd = ord . castCCharToChar
 
 newtype Sp_Toplistregion = Sp_Toplistregion { unSp_Toplistregion :: CInt }
   deriving (Show)
