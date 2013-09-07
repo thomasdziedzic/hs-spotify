@@ -1,6 +1,4 @@
-{-# LINE 1 "Misc.hsc" #-}
 module Bindings.Spotify.Misc
-{-# LINE 2 "Misc.hsc" #-}
 where
 
 import Foreign
