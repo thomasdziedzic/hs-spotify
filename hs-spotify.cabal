@@ -9,6 +9,8 @@ Build-Type: Simple
 Cabal-Version: >=1.10
 Stability: experimental
 Category: FFI
+homepage: https://github.com/gostrc/hs-spotify
+bug-reports: https://github.com/gostrc/hs-spotify/issues
 
 Library
   Build-Depends:
