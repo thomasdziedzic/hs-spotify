@@ -55,7 +55,7 @@ Test-Suite bindings
   hs-source-dirs:
     src test
   main-is:
-    TestRunner.hs
+    TestBindings.hs
   type:
     exitcode-stdio-1.0
   Build-Depends:
