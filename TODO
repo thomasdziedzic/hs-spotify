@@ -1,3 +1,0 @@
-low level bindings
-
-1) implement #define SP_TOPLIST_REGION(a, b) ((a) << 8 | (b))
