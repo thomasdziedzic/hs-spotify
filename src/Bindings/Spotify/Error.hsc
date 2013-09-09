@@ -43,10 +43,12 @@ module Bindings.Spotify.Error
 
 import Foreign.C.Types
 import Foreign.C.String
+import Foreign.Storable
 
 #include <libspotify/api.h>
 
 newtype Sp_Error = Sp_Error { unSp_Error :: CInt }
+  deriving (Show, Storable)
 
 #{enum Sp_Error, Sp_Error
   , sp_error_ok                        = SP_ERROR_OK

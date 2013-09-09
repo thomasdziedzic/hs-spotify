@@ -16,7 +16,7 @@ import Bindings.Spotify.Struct
 #let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
 
 newtype Version = Version { unVersion :: CInt }
-  deriving (Show)
+  deriving (Show, Storable)
 
 spotifyApiVersion :: Version
 spotifyApiVersion = Version #const SPOTIFY_API_VERSION
@@ -328,7 +328,7 @@ instance Storable Sp_Session_Callbacks where
     (#poke sp_session_callbacks, private_session_mode_changed) ptr (private_session_mode_changed sessionCallbacks)
 
 data Sp_Session_Config = Sp_Session_Config
-  { api_version                      :: CInt
+  { api_version                      :: Version
   , cache_location                   :: CString
   , settings_location                :: CString
   , application_key                  :: Ptr ()
