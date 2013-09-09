@@ -1,4 +1,9 @@
 *.swp
+*.o
+*.h
+*.hi
+*.key
+
 dist/
 
 src/Bindings/Spotify/Album.hs
@@ -16,3 +21,5 @@ src/Bindings/Spotify/Session.hs
 src/Bindings/Spotify/Toplist.hs
 src/Bindings/Spotify/Track.hs
 src/Bindings/Spotify/User.hs
+
+example/tracefile
