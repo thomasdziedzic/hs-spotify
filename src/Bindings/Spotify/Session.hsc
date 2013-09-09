@@ -276,7 +276,7 @@ data Sp_Session_Callbacks = Sp_Session_Callbacks
   , connectionstate_updated      :: FunPtr (Ptr Sp_Session -> IO ())
   , scrobble_error               :: FunPtr (Ptr Sp_Session -> Sp_Error -> IO ())
   , private_session_mode_changed :: FunPtr (Ptr Sp_Session -> Sp_Bool -> IO ())
-  }
+  } deriving (Show)
 
 instance Storable Sp_Session_Callbacks where
   sizeOf _ = #size sp_session_callbacks
@@ -345,7 +345,7 @@ data Sp_Session_Config = Sp_Session_Config
   , proxy_password                   :: CString
   , ca_certs_filename                :: CString
   , tracefile                        :: CString
-  }
+  } deriving (Show)
 
 instance Storable Sp_Session_Config where
   sizeOf _ = #size sp_session_config

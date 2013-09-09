@@ -10,29 +10,23 @@ import qualified Data.ByteString.Char8 as BS
 import Control.Monad ((<=<))
 import Foreign.Storable
 import Foreign.C.Types
+import Foreign.Marshal.Alloc
 import System.IO
 
 logged_in_cb :: Ptr Sp_Session -> Sp_Error -> IO ()
-logged_in_cb session_ptr err = do
-  putStrLn "in logged_in callback"
-  writeFile "log" "in logged_in callback"
-  hFlush stdout
+logged_in_cb session_ptr err = error "in logged_in_cb"
 
 foreign import ccall "wrapper"
   mkLoggedInCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
 
 logged_out_cb :: Ptr Sp_Session -> IO ()
-logged_out_cb session_ptr = do
-  putStrLn "in logged_out callback"
-  hFlush stdout
+logged_out_cb session_ptr = error "in logged_out_cb"
 
 foreign import ccall "wrapper"
   mkLoggedOutCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
 
 metadata_updated_cb :: Ptr Sp_Session -> IO ()
-metadata_updated_cb session_ptr = do
-  putStrLn "in metadata_updated callback"
-  hFlush stdout
+metadata_updated_cb session_ptr = error "in metadata_updated_cb"
 
 foreign import ccall "wrapper"
   mkMetadataUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
@@ -255,19 +249,21 @@ main = do
       , user_agent                       = userAgentCString
       , callbacks                        = session_callbacks_ptr
       , userdata                         = nullPtr
-      , compress_playlists               = fromBool True
-      , dont_save_metadata_for_playlists = fromBool True
-      , initially_unload_playlists       = fromBool True
-      , device_id                        = emptyCString
-      , proxy                            = emptyCString
-      , proxy_username                   = emptyCString
-      , proxy_password                   = emptyCString
-      , ca_certs_filename                = emptyCString
+      , compress_playlists               = fromBool False
+      , dont_save_metadata_for_playlists = fromBool False
+      , initially_unload_playlists       = fromBool False
+      , device_id                        = nullPtr
+      , proxy                            = nullPtr
+      , proxy_username                   = nullPtr
+      , proxy_password                   = nullPtr
+      , ca_certs_filename                = nullPtr
       , tracefile                        = tracefilepath
       }
 
+  putStrLn . show $ session_callbacks
+  putStrLn . show $ session_config
   session_config_ptr <- new session_config
-  session_ptr_ptr <- new nullPtr
+  session_ptr_ptr <- (malloc :: IO (Ptr (Ptr Sp_Session)))
   err <- c_sp_session_create session_config_ptr session_ptr_ptr
   errMsg <- peekCString <=< c_sp_error_message $ err
   putStrLn . show $ errMsg
