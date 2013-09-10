@@ -6,12 +6,13 @@ import Bindings.Spotify.CommonTypes
 import Foreign.Ptr
 import Foreign.C.String
 import Foreign.Marshal.Utils
-import qualified Data.ByteString.Char8 as BS
+import qualified Data.ByteString as BS
 import Control.Monad ((<=<))
 import Foreign.Storable
 import Foreign.C.Types
 import Foreign.Marshal.Alloc
 import System.IO
+import Foreign.Marshal.Array
 
 logged_in_cb :: Ptr Sp_Session -> Sp_Error -> IO ()
 logged_in_cb session_ptr err = error "in logged_in_cb"
@@ -238,33 +239,45 @@ main = do
   userAgentCString <- newCString "hs-spotify"
   cachelocation <- newCString "/tmp/spotify"
   tracefilepath <- newCString "tracefile"
-  keyCString <- newCString . BS.unpack $ key
+  key_ptr <- newArray . BS.unpack $ key
+
   session_callbacks_ptr <- new session_callbacks
+  putStrLn "session_callbacks_ptr"
+  putStrLn . show $ session_callbacks_ptr
+
   let session_config = Sp_Session_Config {
         api_version                      = spotifyApiVersion
       , cache_location                   = cachelocation
       , settings_location                = cachelocation
-      , application_key                  = castPtr keyCString
+      , application_key                  = castPtr key_ptr
       , application_key_size             = fromIntegral . BS.length $ key
       , user_agent                       = userAgentCString
       , callbacks                        = session_callbacks_ptr
-      , userdata                         = nullPtr
+      , userdata                         = castPtr userAgentCString
       , compress_playlists               = fromBool False
       , dont_save_metadata_for_playlists = fromBool False
       , initially_unload_playlists       = fromBool False
-      , device_id                        = nullPtr
-      , proxy                            = nullPtr
-      , proxy_username                   = nullPtr
-      , proxy_password                   = nullPtr
-      , ca_certs_filename                = nullPtr
+      , device_id                        = userAgentCString
+      , proxy                            = emptyCString
+      , proxy_username                   = emptyCString
+      , proxy_password                   = emptyCString
+      , ca_certs_filename                = emptyCString
       , tracefile                        = tracefilepath
       }
 
   putStrLn . show $ session_callbacks
   putStrLn . show $ session_config
+
   session_config_ptr <- new session_config
+  putStrLn "session_config_ptr:"
+  putStrLn . show $ session_config_ptr
+
   session_ptr_ptr <- (malloc :: IO (Ptr (Ptr Sp_Session)))
+  putStrLn "session_ptr_ptr:"
+  putStrLn . show $ session_ptr_ptr
+
   err <- c_sp_session_create session_config_ptr session_ptr_ptr
   errMsg <- peekCString <=< c_sp_error_message $ err
   putStrLn . show $ errMsg
+
   threadDelay 10000000
