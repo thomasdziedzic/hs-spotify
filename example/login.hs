@@ -280,4 +280,36 @@ main = do
   errMsg <- peekCString <=< c_sp_error_message $ err
   putStrLn . show $ errMsg
 
-  threadDelay 10000000
+  session_ptr <- peek session_ptr_ptr
+  putStrLn "session_ptr:"
+  putStrLn . show $ session_ptr
+
+  putStrLn "Enter your username"
+  username <- getLine >>= newCString 
+  putStrLn "Enter your password"
+  password <- getLine >>= newCString
+
+  err <- c_sp_session_login session_ptr username password (fromBool False) nullPtr
+  errMsg <- peekCString <=< c_sp_error_message $ err
+  putStrLn . show $ errMsg
+
+  process_events session_ptr
+  --threadDelay 10000000
+
+process_events :: Ptr Sp_Session -> IO ()
+process_events session_ptr = do
+  putStrLn "processing events"
+
+  next_timeout_ptr <- (malloc :: IO (Ptr CInt))
+
+  err <- c_sp_session_process_events session_ptr next_timeout_ptr
+  errMsg <- peekCString <=< c_sp_error_message $ err
+  putStrLn . show $ errMsg
+
+  next_timeout_ms <- peek next_timeout_ptr
+
+  let delay_us = (1000 * fromIntegral next_timeout_ms)
+  putStrLn $ "delaying " ++ show delay_us ++ "ms"
+  threadDelay $ 10 * 1000000
+
+  process_events session_ptr
