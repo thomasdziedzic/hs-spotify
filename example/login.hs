@@ -58,7 +58,7 @@ foreign import ccall "wrapper"
 
 notify_main_thread_cb :: Broadcast () -> Ptr Sp_Session -> IO ()
 notify_main_thread_cb process_events_broadcast session_ptr = do
-  Broadcast.signal process_events_broadcast ()
+  Broadcast.broadcast process_events_broadcast ()
 
   putStrLn "in notify_main_thread callback"
   hFlush stdout
@@ -196,10 +196,6 @@ foreign import ccall "wrapper"
 main :: IO ()
 main = do
   key <- BS.readFile $ "spotify_appkey.key"
-  putStrLn "Key:"
-  putStrLn . show $ key
-  putStrLn "Key Length:"
-  putStrLn . show . BS.length $ key
 
   process_events_broadcast <- Broadcast.new
 
@@ -256,8 +252,6 @@ main = do
   key_ptr <- newArray . BS.unpack $ key
 
   session_callbacks_ptr <- new session_callbacks
-  putStrLn "session_callbacks_ptr"
-  putStrLn . show $ session_callbacks_ptr
 
   let session_config = Sp_Session_Config {
         api_version                      = spotifyApiVersion
@@ -279,24 +273,15 @@ main = do
       , tracefile                        = tracefilepath
       }
 
-  putStrLn . show $ session_callbacks
-  putStrLn . show $ session_config
-
   session_config_ptr <- new session_config
-  putStrLn "session_config_ptr:"
-  putStrLn . show $ session_config_ptr
 
   session_ptr_ptr <- (malloc :: IO (Ptr (Ptr Sp_Session)))
-  putStrLn "session_ptr_ptr:"
-  putStrLn . show $ session_ptr_ptr
 
   err <- c_sp_session_create session_config_ptr session_ptr_ptr
   errMsg <- peekCString <=< c_sp_error_message $ err
   putStrLn . show $ errMsg
 
   session_ptr <- peek session_ptr_ptr
-  putStrLn "session_ptr:"
-  putStrLn . show $ session_ptr
 
   putStrLn "Enter your username"
   username <- getLine >>= newCString 
@@ -341,5 +326,7 @@ process_events process_events_broadcast session_ptr = do
 
   let delay_us = (1000 * fromIntegral next_timeout_ms)
   putStrLn $ "delaying " ++ show delay_us ++ "ms"
+
+  Broadcast.silence process_events_broadcast
 
   delay_process_events' process_events_broadcast delay_us session_ptr
