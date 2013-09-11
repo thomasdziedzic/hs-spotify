@@ -21,40 +21,25 @@ logged_in_cb session_ptr err = do
   putStrLn $ "in logged_in_cb with err: " ++ show err
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkLoggedInCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
-
 logged_out_cb :: Ptr Sp_Session -> IO ()
 logged_out_cb session_ptr = do
   putStrLn "in logged_out_cb"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkLoggedOutCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
 
 metadata_updated_cb :: Ptr Sp_Session -> IO ()
 metadata_updated_cb session_ptr = do
   putStrLn "in metadata_updated_cb"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkMetadataUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
-
 connection_error_cb :: Ptr Sp_Session -> Sp_Error -> IO ()
 connection_error_cb session_ptr err = do
   putStrLn "in connection_error callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkConnectionErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
-
 message_to_user_cb :: Ptr Sp_Session -> CString -> IO ()
 message_to_user_cb session_ptr msg = do
   putStrLn "in message_to_user callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkMessageToUserCb :: (Ptr Sp_Session -> CString -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> CString -> IO ()))
 
 notify_main_thread_cb :: Broadcast () -> Ptr Sp_Session -> IO ()
 notify_main_thread_cb process_events_broadcast session_ptr = do
@@ -63,27 +48,16 @@ notify_main_thread_cb process_events_broadcast session_ptr = do
   putStrLn "in notify_main_thread callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkNotifyMainThreadCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
-
-type MusicDeliveryCb = Ptr Sp_Session -> Ptr Sp_AudioFormat -> Ptr () -> CInt -> IO CInt
-
 music_delivery_cb :: MusicDeliveryCb
 music_delivery_cb session_ptr audioformat_ptr frames_ptr num_frames = do
   putStrLn "in music_delivery_cb callback"
   hFlush stdout
   return 1
 
-foreign import ccall "wrapper"
-  mkMusicDeliveryCb :: MusicDeliveryCb -> IO (FunPtr MusicDeliveryCb)
-
 play_token_lost_cb :: Ptr Sp_Session -> IO ()
 play_token_lost_cb session_ptr = do
   putStrLn "in play_token_lost_cb callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkPlayTokenLostCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
 
 log_message_cb :: Ptr Sp_Session -> CString -> IO ()
 log_message_cb session_ptr log_data = do
@@ -92,106 +66,65 @@ log_message_cb session_ptr log_data = do
   putStrLn $ "log data: " ++ logString
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkLogMessageCb :: (Ptr Sp_Session -> CString -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> CString -> IO ()))
-
 end_of_track_cb :: Ptr Sp_Session -> IO ()
 end_of_track_cb session_ptr = do
   putStrLn "in end_of_track_cb callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkEndOfTrackCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
 
 streaming_error_cb :: Ptr Sp_Session -> Sp_Error -> IO ()
 streaming_error_cb session_ptr err = do
   putStrLn "in streaming_error_cb callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkStreamingErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
-
 userinfo_updated_cb :: Ptr Sp_Session -> IO ()
 userinfo_updated_cb session_ptr = do
   putStrLn "in userinfo_updated_cb callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkUserinfoUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
 
 start_playback_cb :: Ptr Sp_Session -> IO ()
 start_playback_cb session_ptr = do
   putStrLn "in start_playback_cb callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkStartPlaybackCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
-
 stop_playback_cb :: Ptr Sp_Session -> IO ()
 stop_playback_cb session_ptr = do
   putStrLn "in stop_playback_cb callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkStopPlaybackCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
-
-type GetAudioBufferStatsCb = Ptr Sp_Session -> Ptr Sp_Audio_Buffer_Stats -> IO ()
 
 get_audio_buffer_stats_cb :: GetAudioBufferStatsCb
 get_audio_buffer_stats_cb session_ptr audio_buffer_stats_ptr= do
   putStrLn "in get_audio_buffer_stats_cb callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkGetAudioBufferStatsCb :: GetAudioBufferStatsCb -> IO (FunPtr GetAudioBufferStatsCb)
-
 offline_status_updated_cb :: Ptr Sp_Session -> IO ()
 offline_status_updated_cb session_ptr = do
   putStrLn "in offline_status_updated_cb callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkOfflineStatusUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
 
 offline_error_cb :: Ptr Sp_Session -> Sp_Error -> IO ()
 offline_error_cb session_ptr err = do
   putStrLn "in offline_error_cb callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkOfflineErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
-
 credentials_blob_updated_cb :: Ptr Sp_Session -> CString -> IO ()
 credentials_blob_updated_cb session_ptr log_data = do
   putStrLn "in credentials_blob_updated_cb callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkCredentialsBlobUpdatedCb :: (Ptr Sp_Session -> CString -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> CString -> IO ()))
 
 connectionstate_updated_cb :: Ptr Sp_Session -> IO ()
 connectionstate_updated_cb session_ptr = do
   putStrLn "in connectionstate_updated_cb callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkConnectionstateUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
-
 scrobble_error_cb :: Ptr Sp_Session -> Sp_Error -> IO ()
 scrobble_error_cb session_ptr err = do
   putStrLn "in scrobble_error_cb callback"
   hFlush stdout
 
-foreign import ccall "wrapper"
-  mkScrobbleErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
-
 private_session_mode_changed_cb :: Ptr Sp_Session -> Sp_Bool -> IO ()
 private_session_mode_changed_cb session_ptr is_private  = do
   putStrLn "in private_session_mode_changed_cb callback"
   hFlush stdout
-
-foreign import ccall "wrapper"
-  mkPrivateSessionModeChangedCb :: (Ptr Sp_Session -> Sp_Bool -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Bool -> IO ()))
 
 main :: IO ()
 main = do

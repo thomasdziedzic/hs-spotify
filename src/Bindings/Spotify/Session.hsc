@@ -327,6 +327,71 @@ instance Storable Sp_Session_Callbacks where
     (#poke sp_session_callbacks, scrobble_error) ptr (scrobble_error sessionCallbacks)
     (#poke sp_session_callbacks, private_session_mode_changed) ptr (private_session_mode_changed sessionCallbacks)
 
+foreign import ccall "wrapper"
+  mkLoggedInCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
+
+foreign import ccall "wrapper"
+  mkLoggedOutCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkMetadataUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkConnectionErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
+
+foreign import ccall "wrapper"
+  mkMessageToUserCb :: (Ptr Sp_Session -> CString -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> CString -> IO ()))
+
+foreign import ccall "wrapper"
+  mkNotifyMainThreadCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+type MusicDeliveryCb = Ptr Sp_Session -> Ptr Sp_AudioFormat -> Ptr () -> CInt -> IO CInt
+foreign import ccall "wrapper"
+  mkMusicDeliveryCb :: MusicDeliveryCb -> IO (FunPtr MusicDeliveryCb)
+
+foreign import ccall "wrapper"
+  mkPlayTokenLostCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkLogMessageCb :: (Ptr Sp_Session -> CString -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> CString -> IO ()))
+
+foreign import ccall "wrapper"
+  mkEndOfTrackCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkStreamingErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
+
+foreign import ccall "wrapper"
+  mkUserinfoUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkStartPlaybackCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkStopPlaybackCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+type GetAudioBufferStatsCb = Ptr Sp_Session -> Ptr Sp_Audio_Buffer_Stats -> IO ()
+foreign import ccall "wrapper"
+  mkGetAudioBufferStatsCb :: GetAudioBufferStatsCb -> IO (FunPtr GetAudioBufferStatsCb)
+
+foreign import ccall "wrapper"
+  mkOfflineStatusUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkOfflineErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
+
+foreign import ccall "wrapper"
+  mkCredentialsBlobUpdatedCb :: (Ptr Sp_Session -> CString -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> CString -> IO ()))
+
+foreign import ccall "wrapper"
+  mkConnectionstateUpdatedCb :: (Ptr Sp_Session -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> IO ()))
+
+foreign import ccall "wrapper"
+  mkScrobbleErrorCb :: (Ptr Sp_Session -> Sp_Error -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Error -> IO ()))
+
+foreign import ccall "wrapper"
+  mkPrivateSessionModeChangedCb :: (Ptr Sp_Session -> Sp_Bool -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Bool -> IO ()))
+
 data Sp_Session_Config = Sp_Session_Config
   { api_version                      :: Version
   , cache_location                   :: CString
