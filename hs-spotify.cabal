@@ -35,6 +35,7 @@ Library
     Bindings.Spotify.User
 
     Spotify.Error
+    Spotify.Struct
   hs-source-dirs:
     src
   ghc-options:
