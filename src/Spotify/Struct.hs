@@ -1,18 +1,18 @@
 module Spotify.Struct (
-      Session
-    , Track
-    , Album
-    , Artist
-    , Artistbrowse
-    , Albumbrowse
-    , Toplistbrowse
-    , Search
-    , Link
-    , Image
-    , User
-    , Playlist
-    , Playlistcontainer
-    , Inbox
+      Session(..)
+    , Track(..)
+    , Album(..)
+    , Artist(..)
+    , Artistbrowse(..)
+    , Albumbrowse(..)
+    , Toplistbrowse(..)
+    , Search(..)
+    , Link(..)
+    , Image(..)
+    , User(..)
+    , Playlist(..)
+    , Playlistcontainer(..)
+    , Inbox(..)
 ) where
 
 import Foreign.Ptr
