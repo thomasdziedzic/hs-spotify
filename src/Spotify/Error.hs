@@ -12,7 +12,6 @@ import Foreign.C.String
 import Bindings.Spotify.Error
 
 import Control.Monad
-import Data.Map.Lazy (Map)
 import qualified Data.Map.Lazy as M
 
 data Error =

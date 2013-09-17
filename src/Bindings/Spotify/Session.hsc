@@ -30,16 +30,16 @@ newtype Sp_ConnectionState = Sp_ConnectionState { unSp_ConnectionState :: CInt }
   }
 
 newtype Sp_SampleType = Sp_SampleType { unSampleType :: CInt }
-  deriving (Show, Storable)
+  deriving (Show, Storable, Ord, Eq)
 
 #{enum Sp_SampleType, Sp_SampleType
   , sp_sampletype_int16_native_endian = SP_SAMPLETYPE_INT16_NATIVE_ENDIAN
   }
 
 data Sp_AudioFormat = Sp_AudioFormat {
-    sample_type :: Sp_SampleType
-  , sample_rate :: CInt
-  , channels    :: CInt
+    sp_sample_type :: Sp_SampleType
+  , sp_sample_rate :: CInt
+  , sp_channels    :: CInt
   } deriving (Show)
 
 type Sp_AudioFormatPtr = Ptr Sp_AudioFormat
@@ -53,9 +53,9 @@ instance Storable Sp_AudioFormat where
       <*> (#peek sp_audioformat, sample_rate) ptr
       <*> (#peek sp_audioformat, channels) ptr
   poke ptr audioFormat = do
-    (#poke sp_audioformat, sample_type) ptr (sample_type audioFormat)
-    (#poke sp_audioformat, sample_rate) ptr (sample_rate audioFormat)
-    (#poke sp_audioformat, channels) ptr (channels audioFormat)
+    (#poke sp_audioformat, sample_type) ptr (sp_sample_type audioFormat)
+    (#poke sp_audioformat, sample_rate) ptr (sp_sample_rate audioFormat)
+    (#poke sp_audioformat, channels) ptr (sp_channels audioFormat)
 
 newtype Sp_Bitrate = Sp_Bitrate { unSp_Bitrate :: CInt }
   deriving (Show)
@@ -128,8 +128,8 @@ newtype Sp_Image_Size = Sp_Image_Size { unSp_Image_Size :: CInt }
   }
 
 data Sp_Audio_Buffer_Stats = Sp_Audio_Buffer_Stats {
-    samples :: CInt
-  , stutter :: CInt
+    sp_samples :: CInt
+  , sp_stutter :: CInt
   } deriving (Show)
 
 type Sp_Audio_Buffer_StatsPtr = Ptr Sp_Audio_Buffer_Stats
@@ -142,8 +142,8 @@ instance Storable Sp_Audio_Buffer_Stats where
       <$> (#peek sp_audio_buffer_stats, samples) ptr
       <*> (#peek sp_audio_buffer_stats, stutter) ptr
   poke ptr audioBufferStats = do
-    (#poke sp_audio_buffer_stats, samples) ptr (samples audioBufferStats)
-    (#poke sp_audio_buffer_stats, stutter) ptr (stutter audioBufferStats)
+    (#poke sp_audio_buffer_stats, samples) ptr (sp_samples audioBufferStats)
+    (#poke sp_audio_buffer_stats, stutter) ptr (sp_stutter audioBufferStats)
 
 data Sp_Subscribers = Sp_Subscribers {
     count       :: CUInt
@@ -390,23 +390,23 @@ foreign import ccall "wrapper"
   mkPrivateSessionModeChangedCb :: (Ptr Sp_Session -> Sp_Bool -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Bool -> IO ()))
 
 data Sp_Session_Config = Sp_Session_Config
-  { api_version                      :: CInt
-  , cache_location                   :: CString
-  , settings_location                :: CString
-  , application_key                  :: Ptr ()
-  , application_key_size             :: CSize
-  , user_agent                       :: CString
-  , callbacks                        :: Ptr Sp_Session_Callbacks
-  , userdata                         :: Ptr ()
-  , compress_playlists               :: Sp_Bool
-  , dont_save_metadata_for_playlists :: Sp_Bool
-  , initially_unload_playlists       :: Sp_Bool
-  , device_id                        :: CString
-  , proxy                            :: CString
-  , proxy_username                   :: CString
-  , proxy_password                   :: CString
-  , ca_certs_filename                :: CString
-  , tracefile                        :: CString
+  { sp_api_version                      :: CInt
+  , sp_cache_location                   :: CString
+  , sp_settings_location                :: CString
+  , sp_application_key                  :: Ptr ()
+  , sp_application_key_size             :: CSize
+  , sp_user_agent                       :: CString
+  , sp_callbacks                        :: Ptr Sp_Session_Callbacks
+  , sp_userdata                         :: Ptr ()
+  , sp_compress_playlists               :: Sp_Bool
+  , sp_dont_save_metadata_for_playlists :: Sp_Bool
+  , sp_initially_unload_playlists       :: Sp_Bool
+  , sp_device_id                        :: CString
+  , sp_proxy                            :: CString
+  , sp_proxy_username                   :: CString
+  , sp_proxy_password                   :: CString
+  , sp_ca_certs_filename                :: CString
+  , sp_tracefile                        :: CString
   } deriving (Show)
 
 instance Storable Sp_Session_Config where
@@ -432,23 +432,23 @@ instance Storable Sp_Session_Config where
       <*> (#peek sp_session_config, ca_certs_filename) ptr
       <*> (#peek sp_session_config, tracefile) ptr
   poke ptr sessionConfig = do
-    (#poke sp_session_config, api_version) ptr (api_version sessionConfig)
-    (#poke sp_session_config, cache_location) ptr (cache_location sessionConfig)
-    (#poke sp_session_config, settings_location) ptr (settings_location sessionConfig)
-    (#poke sp_session_config, application_key) ptr (application_key sessionConfig)
-    (#poke sp_session_config, application_key_size) ptr (application_key_size sessionConfig)
-    (#poke sp_session_config, user_agent) ptr (user_agent sessionConfig)
-    (#poke sp_session_config, callbacks) ptr (callbacks sessionConfig)
-    (#poke sp_session_config, userdata) ptr (userdata sessionConfig)
-    (#poke sp_session_config, compress_playlists) ptr (compress_playlists sessionConfig)
-    (#poke sp_session_config, dont_save_metadata_for_playlists) ptr (dont_save_metadata_for_playlists sessionConfig)
-    (#poke sp_session_config, initially_unload_playlists) ptr (initially_unload_playlists sessionConfig)
-    (#poke sp_session_config, device_id) ptr (device_id sessionConfig)
-    (#poke sp_session_config, proxy) ptr (proxy sessionConfig)
-    (#poke sp_session_config, proxy_username) ptr (proxy_username sessionConfig)
-    (#poke sp_session_config, proxy_password) ptr (proxy_password sessionConfig)
-    (#poke sp_session_config, ca_certs_filename) ptr (ca_certs_filename sessionConfig)
-    (#poke sp_session_config, tracefile) ptr (tracefile sessionConfig)
+    (#poke sp_session_config, api_version) ptr (sp_api_version sessionConfig)
+    (#poke sp_session_config, cache_location) ptr (sp_cache_location sessionConfig)
+    (#poke sp_session_config, settings_location) ptr (sp_settings_location sessionConfig)
+    (#poke sp_session_config, application_key) ptr (sp_application_key sessionConfig)
+    (#poke sp_session_config, application_key_size) ptr (sp_application_key_size sessionConfig)
+    (#poke sp_session_config, user_agent) ptr (sp_user_agent sessionConfig)
+    (#poke sp_session_config, callbacks) ptr (sp_callbacks sessionConfig)
+    (#poke sp_session_config, userdata) ptr (sp_userdata sessionConfig)
+    (#poke sp_session_config, compress_playlists) ptr (sp_compress_playlists sessionConfig)
+    (#poke sp_session_config, dont_save_metadata_for_playlists) ptr (sp_dont_save_metadata_for_playlists sessionConfig)
+    (#poke sp_session_config, initially_unload_playlists) ptr (sp_initially_unload_playlists sessionConfig)
+    (#poke sp_session_config, device_id) ptr (sp_device_id sessionConfig)
+    (#poke sp_session_config, proxy) ptr (sp_proxy sessionConfig)
+    (#poke sp_session_config, proxy_username) ptr (sp_proxy_username sessionConfig)
+    (#poke sp_session_config, proxy_password) ptr (sp_proxy_password sessionConfig)
+    (#poke sp_session_config, ca_certs_filename) ptr (sp_ca_certs_filename sessionConfig)
+    (#poke sp_session_config, tracefile) ptr (sp_tracefile sessionConfig)
 
 foreign import ccall "libspotify/api.h sp_session_create"
   c_sp_session_create :: Ptr Sp_Session_Config -> Ptr (Ptr Sp_Session) -> IO Sp_Error
