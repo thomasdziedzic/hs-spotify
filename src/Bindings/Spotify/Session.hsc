@@ -15,11 +15,8 @@ import Bindings.Spotify.Struct
 
 #let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
 
-newtype Version = Version { unVersion :: CInt }
-  deriving (Show, Storable)
-
-spotifyApiVersion :: Version
-spotifyApiVersion = Version #const SPOTIFY_API_VERSION
+spotify_api_version :: CInt
+spotify_api_version = #const SPOTIFY_API_VERSION
 
 newtype Sp_ConnectionState = Sp_ConnectionState { unSp_ConnectionState :: CInt }
   deriving (Show)
@@ -393,7 +390,7 @@ foreign import ccall "wrapper"
   mkPrivateSessionModeChangedCb :: (Ptr Sp_Session -> Sp_Bool -> IO ()) -> IO (FunPtr (Ptr Sp_Session -> Sp_Bool -> IO ()))
 
 data Sp_Session_Config = Sp_Session_Config
-  { api_version                      :: Version
+  { api_version                      :: CInt
   , cache_location                   :: CString
   , settings_location                :: CString
   , application_key                  :: Ptr ()
