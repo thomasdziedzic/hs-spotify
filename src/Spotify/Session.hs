@@ -5,10 +5,12 @@ module Spotify.Session (
     , AudioBufferStats(..)
     , SessionCallbacks(..)
     , SessionConfig(..)
---    , sessionCreate
+    , sessionCreate
 ) where
 
 import Bindings.Spotify.Session
+import Bindings.Spotify.Struct
+import Bindings.Spotify.Error
 
 import Spotify.Struct
 import Spotify.Error
@@ -17,10 +19,11 @@ import Data.Int
 import qualified Data.ByteString.Lazy as B
 import Foreign.C.String (peekCString, newCString)
 import qualified Data.Map.Lazy as M
-import Foreign.Ptr (Ptr, castPtr, nullPtr)
+import Foreign.Ptr (Ptr, castPtr)
 import Foreign.Marshal.Array (peekArray, newArray)
 import Foreign.Storable
 import Foreign.Marshal.Utils (fromBool, toBool, new)
+import Foreign.Marshal.Alloc (malloc)
 import Control.Applicative ((<$>), (<*>))
 
 newtype Version = Version { unVersion :: Int }
@@ -209,3 +212,14 @@ hs2cConfig config = do
         }
 
     new session_config
+
+sessionCreate :: SessionConfig -> IO (Either Error Session)
+sessionCreate sessionConfig = do
+    sessionConfigPtr <- hs2cConfig sessionConfig
+    sessionPtrPtr <- (malloc :: IO (Ptr (Ptr Sp_Session)))
+    err <- c_sp_session_create sessionConfigPtr sessionPtrPtr
+    case err of
+        sp_error_ok -> do
+            sessionPtr <- peek sessionPtrPtr
+            return $ Right (Session sessionPtr)
+        _ -> return $ Left (wrapError err)
