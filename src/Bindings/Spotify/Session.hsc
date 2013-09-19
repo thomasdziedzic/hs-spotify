@@ -1,5 +1,143 @@
-module Bindings.Spotify.Session
-where
+module Bindings.Spotify.Session (
+      spotify_api_version
+    , Sp_ConnectionState(..)
+    , sp_connection_state_logged_out
+    , sp_connection_state_logged_in
+    , sp_connection_state_disconnected
+    , sp_connection_state_undefined
+    , sp_connection_state_offline
+    , Sp_SampleType(..)
+    , sp_sampletype_int16_native_endian
+    , Sp_AudioFormat(..)
+    , Sp_Bitrate(..)
+    , sp_bitrate_160k
+    , sp_bitrate_320k
+    , sp_bitrate_96k
+    , Sp_Playlist_Type(..)
+    , sp_playlist_type_playlist
+    , sp_playlist_type_start_folder
+    , sp_playlist_type_end_folder
+    , sp_playlist_type_placeholder
+    , Sp_Search_Type(..)
+    , sp_search_standard
+    , sp_search_suggest
+    , Sp_Playlist_Offline_Status(..)
+    , sp_playlist_offline_status_no
+    , sp_playlist_offline_status_yes
+    , sp_playlist_offline_status_downloading
+    , sp_playlist_offline_status_waiting
+    , Sp_Track_Availability(..)
+    , sp_track_availability_unavailable
+    , sp_track_availability_available
+    , sp_track_availability_not_streamable
+    , sp_track_availability_banned_by_artist
+    , Sp_Track_Offline_Status(..)
+    , sp_track_offline_no
+    , sp_track_offline_waiting
+    , sp_track_offline_downloading
+    , sp_track_offline_done
+    , sp_track_offline_error
+    , sp_track_offline_done_expired
+    , sp_track_offline_limit_exceeded
+    , sp_track_offline_done_resync
+    , Sp_Image_Size(..)
+    , sp_image_size_normal
+    , sp_image_size_small
+    , sp_image_size_large
+    , Sp_Audio_Buffer_Stats(..)
+    , Sp_Subscribers(..)
+    , Sp_Connection_Type(..)
+    , sp_connection_type_unknown
+    , sp_connection_type_none
+    , sp_connection_type_mobile
+    , sp_connection_type_mobile_roaming
+    , sp_connection_type_wifi
+    , sp_connection_type_wired
+    , Sp_Connection_Rules(..)
+    , sp_connection_rule_network
+    , sp_connection_rule_network_if_roaming
+    , sp_connection_rule_allow_sync_over_mobile
+    , sp_connection_rule_allow_sync_over_wifi
+    , Sp_ArtistBrowse_Type(..)
+    , sp_artistbrowse_full
+    , sp_artistbrowse_no_tracks
+    , sp_artistbrowse_no_albums
+    , Sp_Social_Provider(..)
+    , sp_social_provider_spotify
+    , sp_social_provider_facebook
+    , sp_social_provider_lastfm
+    , Sp_Scrobbling_State(..)
+    , sp_scrobbling_state_use_global_setting
+    , sp_scrobbling_state_local_enabled
+    , sp_scrobbling_state_local_disabled
+    , sp_scrobbling_state_global_enabled
+    , sp_scrobbling_state_global_disabled
+    , Sp_Offline_Sync_Status(..)
+    , Sp_Session_Callbacks(..)
+    , mkLoggedInCb
+    , mkLoggedOutCb
+    , mkMetadataUpdatedCb
+    , mkConnectionErrorCb
+    , mkMessageToUserCb
+    , mkNotifyMainThreadCb
+    , mkMusicDeliveryCb
+    , mkPlayTokenLostCb
+    , mkLogMessageCb
+    , mkEndOfTrackCb
+    , mkStreamingErrorCb
+    , mkUserinfoUpdatedCb
+    , mkStartPlaybackCb
+    , mkStopPlaybackCb
+    , mkGetAudioBufferStatsCb
+    , mkOfflineStatusUpdatedCb
+    , mkOfflineErrorCb
+    , mkCredentialsBlobUpdatedCb
+    , mkConnectionstateUpdatedCb
+    , mkScrobbleErrorCb
+    , mkPrivateSessionModeChangedCb
+    , Sp_Session_Config(..)
+    , c_sp_session_create
+    , c_sp_session_release
+    , c_sp_session_login
+    , c_sp_session_relogin
+    , c_sp_session_remembered_user
+    , c_sp_session_user_name
+    , c_sp_session_forget_me
+    , c_sp_session_user
+    , c_sp_session_logout
+    , c_sp_session_flush_caches
+    , c_sp_session_connectionstate
+    , c_sp_session_userdata
+    , c_sp_session_set_cache_size
+    , c_sp_session_process_events
+    , c_sp_session_player_load
+    , c_sp_session_player_seek
+    , c_sp_session_player_play
+    , c_sp_session_player_unload
+    , c_sp_session_player_prefetch
+    , c_sp_session_playlistcontainer
+    , c_sp_session_inbox_create
+    , c_sp_session_starred_create
+    , c_sp_session_starred_for_user_create
+    , c_sp_session_publishedcontainer_for_user_create
+    , c_sp_session_preferred_bitrate
+    , c_sp_session_preferred_offline_bitrate
+    , c_sp_session_get_volume_normalization
+    , c_sp_session_set_volume_normalization
+    , c_sp_session_set_private_session
+    , c_sp_session_is_private_session
+    , c_sp_session_set_scrobbling
+    , c_sp_session_is_scrobbling
+    , c_sp_session_is_scrobbling_possible
+    , c_sp_session_set_social_credentials
+    , c_sp_session_set_connection_type
+    , c_sp_session_set_connection_rules
+    , c_sp_offline_tracks_to_sync
+    , c_sp_offline_num_playlists
+    , c_sp_offline_sync_get_status
+    , c_sp_offline_time_left
+    , c_sp_session_user_country
+) where
 
 import Foreign
 import Foreign.C.Types
@@ -41,8 +179,6 @@ data Sp_AudioFormat = Sp_AudioFormat {
   , sp_sample_rate :: CInt
   , sp_channels    :: CInt
   } deriving (Show)
-
-type Sp_AudioFormatPtr = Ptr Sp_AudioFormat
 
 instance Storable Sp_AudioFormat where
   sizeOf _ = #size sp_audioformat
@@ -131,8 +267,6 @@ data Sp_Audio_Buffer_Stats = Sp_Audio_Buffer_Stats {
     sp_samples :: CInt
   , sp_stutter :: CInt
   } deriving (Show)
-
-type Sp_Audio_Buffer_StatsPtr = Ptr Sp_Audio_Buffer_Stats
 
 instance Storable Sp_Audio_Buffer_Stats where
   sizeOf _ = #size sp_audio_buffer_stats
