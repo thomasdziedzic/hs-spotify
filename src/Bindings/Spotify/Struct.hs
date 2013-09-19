@@ -1,18 +1,18 @@
 module Bindings.Spotify.Struct (
-    Sp_Session
-  , Sp_Track
-  , Sp_Album
-  , Sp_Artist
-  , Sp_Artistbrowse
-  , Sp_Albumbrowse
-  , Sp_Toplistbrowse
-  , Sp_Search
-  , Sp_Link
-  , Sp_Image
-  , Sp_User
-  , Sp_Playlist
-  , Sp_Playlistcontainer
-  , Sp_Inbox
+      Sp_Session
+    , Sp_Track
+    , Sp_Album
+    , Sp_Artist
+    , Sp_Artistbrowse
+    , Sp_Albumbrowse
+    , Sp_Toplistbrowse
+    , Sp_Search
+    , Sp_Link
+    , Sp_Image
+    , Sp_User
+    , Sp_Playlist
+    , Sp_Playlistcontainer
+    , Sp_Inbox
 ) where
 
 data Sp_Session
