@@ -1,5 +1,6 @@
 module Spotify.Session (
       Version(..)
+    , spotifyApiVersion
     , SampleType(..)
     , AudioFormat(..)
     , AudioBufferStats(..)
