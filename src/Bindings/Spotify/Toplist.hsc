@@ -1,5 +1,26 @@
-module Bindings.Spotify.Toplist
-where
+module Bindings.Spotify.Toplist (
+      Sp_Toplisttype(..)
+    , sp_toplist_type_artists
+    , sp_toplist_type_albums
+    , sp_toplist_type_tracks
+    , sp_toplist_region
+    , Sp_Toplistregion(..)
+    , sp_toplist_region_everywhere
+    , sp_toplist_region_user
+    , Toplistbrowse_Complete_CB
+    , c_sp_toplistbrowse_create
+    , c_sp_toplistbrowse_is_loaded
+    , c_sp_toplistbrowse_error
+    , c_sp_toplistbrowse_add_ref
+    , c_sp_toplistbrowse_release
+    , c_sp_toplistbrowse_num_artists
+    , c_sp_toplistbrowse_artist
+    , c_sp_toplistbrowse_num_albums
+    , c_sp_toplistbrowse_album
+    , c_sp_toplistbrowse_num_tracks
+    , c_sp_toplistbrowse_track
+    , c_sp_toplistbrowse_backend_request_duration
+) where
 
 import Foreign
 import Foreign.C.Types

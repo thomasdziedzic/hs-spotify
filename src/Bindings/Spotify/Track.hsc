@@ -1,5 +1,26 @@
-module Bindings.Spotify.Track
-where
+module Bindings.Spotify.Track (
+      c_sp_track_is_loaded
+    , c_sp_track_error
+    , c_sp_track_offline_get_status
+    , c_sp_track_get_availability
+    , c_sp_track_is_local
+    , c_sp_track_is_autolinked
+    , c_sp_track_get_playable
+    , c_sp_track_is_placeholder
+    , c_sp_track_is_starred
+    , c_sp_track_set_starred
+    , c_sp_track_num_artists
+    , c_sp_track_artist
+    , c_sp_track_album
+    , c_sp_track_name
+    , c_sp_track_duration
+    , c_sp_track_popularity
+    , c_sp_track_disc
+    , c_sp_track_index
+    , c_sp_localtrack_create
+    , c_sp_track_add_ref
+    , c_sp_track_release
+) where
 
 import Foreign
 import Foreign.C.Types

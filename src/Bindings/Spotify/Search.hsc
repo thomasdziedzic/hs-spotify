@@ -1,5 +1,28 @@
-module Bindings.Spotify.Search
-where
+module Bindings.Spotify.Search (
+      Search_Complete_CB
+    , c_sp_search_create
+    , c_sp_search_is_loaded
+    , c_sp_search_error
+    , c_sp_search_num_tracks
+    , c_sp_search_track
+    , c_sp_search_num_albums
+    , c_sp_search_album
+    , c_sp_search_num_playlists
+    , c_sp_search_playlist
+    , c_sp_search_playlist_name
+    , c_sp_search_playlist_uri
+    , c_sp_search_playlist_image_uri
+    , c_sp_search_num_artists
+    , c_sp_search_artist
+    , c_sp_search_query
+    , c_sp_search_did_you_mean
+    , c_sp_search_total_tracks
+    , c_sp_search_total_albums
+    , c_sp_search_total_artists
+    , c_sp_search_total_playlists
+    , c_sp_search_add_ref
+    , c_sp_search_release
+) where
 
 import Foreign
 import Foreign.C.Types

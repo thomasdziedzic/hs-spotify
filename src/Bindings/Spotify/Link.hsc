@@ -1,5 +1,36 @@
-module Bindings.Spotify.Link
-where
+module Bindings.Spotify.Link (
+      Sp_Linktype(..)
+    , sp_linktype_invalid
+    , sp_linktype_track
+    , sp_linktype_album
+    , sp_linktype_artist
+    , sp_linktype_search
+    , sp_linktype_playlist
+    , sp_linktype_profile
+    , sp_linktype_starred
+    , sp_linktype_localtrack
+    , sp_linktype_image
+    , c_sp_link_create_from_string
+    , c_sp_link_create_from_track
+    , c_sp_link_create_from_album
+    , c_sp_link_create_from_album_cover
+    , c_sp_link_create_from_artist
+    , c_sp_link_create_from_artist_portrait
+    , c_sp_link_create_from_artistbrowse_portrait
+    , c_sp_link_create_from_search
+    , c_sp_link_create_from_playlist
+    , c_sp_link_create_from_user
+    , c_sp_link_create_from_image
+    , c_sp_link_as_string
+    , c_sp_link_type
+    , c_sp_link_as_track
+    , c_sp_link_as_track_and_offset
+    , c_sp_link_as_album
+    , c_sp_link_as_artist
+    , c_sp_link_as_user
+    , c_sp_link_add_ref
+    , c_sp_link_release
+) where
 
 import Foreign
 import Foreign.C.Types

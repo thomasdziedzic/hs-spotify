@@ -1,5 +1,10 @@
-module Bindings.Spotify.Inbox
-where
+module Bindings.Spotify.Inbox (
+      Inboxpost_Complete_CB
+    , c_sp_inbox_post_tracks
+    , c_sp_inbox_error
+    , c_sp_inbox_add_ref
+    , c_sp_inbox_release
+) where
 
 import Foreign
 import Foreign.C.Types

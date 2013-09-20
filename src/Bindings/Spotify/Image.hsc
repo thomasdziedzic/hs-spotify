@@ -1,5 +1,20 @@
-module Bindings.Spotify.Image
-where
+module Bindings.Spotify.Image (
+      Sp_Imageformat(..)
+    , sp_image_format_unknown
+    , sp_image_format_jpeg
+    , Image_Loaded_CB
+    , c_sp_image_create
+    , c_sp_image_create_from_link
+    , c_sp_image_add_load_callback
+    , c_sp_image_remove_load_callback
+    , c_sp_image_is_loaded
+    , c_sp_image_error
+    , c_sp_image_format
+    , c_sp_image_data
+    , c_sp_image_image_id
+    , c_sp_image_add_ref
+    , c_sp_image_release
+) where
 
 import Foreign
 import Foreign.C.Types

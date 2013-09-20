@@ -1,5 +1,19 @@
-module Bindings.Spotify.AlbumBrowse
-where
+module Bindings.Spotify.AlbumBrowse (
+      Albumbrowse_Comblete_CB
+    , c_sp_albumbrowse_create
+    , c_sp_albumbrowse_is_loaded
+    , c_sp_albumbrowse_error
+    , c_sp_albumbrowse_album
+    , c_sp_albumbrowse_artist
+    , c_sp_albumbrowse_num_copyrights
+    , c_sp_albumbrowse_copyright
+    , c_sp_albumbrowse_num_tracks
+    , c_sp_albumbrowse_track
+    , c_sp_albumbrowse_review
+    , c_sp_albumbrowse_backend_request_duration
+    , c_sp_albumbrowse_add_ref
+    , c_sp_albumbrowse_release
+) where
 
 import Foreign
 import Foreign.C.Types

@@ -1,5 +1,60 @@
-module Bindings.Spotify.Playlist
-where
+module Bindings.Spotify.Playlist (
+      Sp_Playlist_Callbacks(..)
+    , c_sp_playlist_is_loaded
+    , c_sp_playlist_add_callbacks
+    , c_sp_playlist_remove_callbacks
+    , c_sp_playlist_num_tracks
+    , c_sp_playlist_track
+    , c_sp_playlist_track_create_time
+    , c_sp_playlist_track_creator
+    , c_sp_playlist_track_seen
+    , c_sp_playlist_track_set_seen
+    , c_sp_playlist_track_message
+    , c_sp_playlist_name
+    , c_sp_playlist_rename
+    , c_sp_playlist_owner
+    , c_sp_playlist_is_collaborative
+    , c_sp_playlist_set_collaborative
+    , c_sp_playlist_set_autolink_tracks
+    , c_sp_playlist_get_description
+    , c_sp_playlist_get_image
+    , c_sp_playlist_has_pending_changes
+    , c_sp_playlist_add_tracks
+    , c_sp_playlist_remove_tracks
+    , c_sp_playlist_reorder_tracks
+    , c_sp_playlist_num_subscribers
+    , c_sp_playlist_subscribers
+    , c_sp_playlist_subscribers_free
+    , c_sp_playlist_update_subscribers
+    , c_sp_playlist_is_in_ram
+    , c_sp_playlist_set_in_ram
+    , c_sp_playlist_create
+    , c_sp_playlist_set_offline_mode
+    , c_sp_playlist_get_offline_status
+    , c_sp_playlist_get_offline_download_completed
+    , c_sp_playlist_add_ref
+    , c_sp_playlist_release
+
+    , Sp_Playlistcontainer_Callbacks(..)
+    , c_sp_playlistcontainer_add_callbacks
+    , c_sp_playlistcontainer_remove_callbacks
+    , c_sp_playlistcontainer_num_playlists
+    , c_sp_playlistcontainer_is_loaded
+    , c_sp_playlistcontainer_playlist
+    , c_sp_playlistcontainer_playlist_type
+    , c_sp_playlistcontainer_playlist_folder_name
+    , c_sp_playlistcontainer_playlist_folder_id
+    , c_sp_playlistcontainer_add_new_playlist
+    , c_sp_playlistcontainer_add_playlist
+    , c_sp_playlistcontainer_remove_playlist
+    , c_sp_playlistcontainer_move_playlist
+    , c_sp_playlistcontainer_add_folder
+    , c_sp_playlistcontainer_owner
+    , c_sp_playlistcontainer_add_ref
+    , c_sp_playlistcontainer_release
+    , c_sp_playlistcontainer_get_unseen_tracks
+    , c_sp_playlistcontainer_clear_unseen_tracks
+) where
 
 import Foreign
 import Foreign.C.Types

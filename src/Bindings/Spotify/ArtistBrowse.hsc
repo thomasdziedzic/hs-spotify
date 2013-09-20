@@ -1,5 +1,24 @@
-module Bindings.Spotify.ArtistBrowse
-where
+module Bindings.Spotify.ArtistBrowse (
+      Artistbrowse_Comblete_CB
+    , c_sp_artistbrowse_create
+    , c_sp_artistbrowse_is_loaded
+    , c_sp_artistbrowse_error
+    , c_sp_artistbrowse_artist
+    , c_sp_artistbrowse_num_portraits
+    , c_sp_artistbrowse_portrait
+    , c_sp_artistbrowse_num_tracks
+    , c_sp_artistbrowse_track
+    , c_sp_artistbrowse_num_tophit_tracks
+    , c_sp_artistbrowse_tophit_track
+    , c_sp_artistbrowse_num_albums
+    , c_sp_artistbrowse_album
+    , c_sp_artistbrowse_num_similar_artists
+    , c_sp_artistbrowse_similar_artist
+    , c_sp_artistbrowse_biography
+    , c_sp_artistbrowse_backend_request_duration
+    , c_sp_artistbrowse_add_ref
+    , c_sp_artistbrowse_release
+) where
 
 import Foreign
 import Foreign.C.Types

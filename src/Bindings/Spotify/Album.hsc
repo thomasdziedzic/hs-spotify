@@ -1,5 +1,19 @@
-module Bindings.Spotify.Album
-where
+module Bindings.Spotify.Album (
+      Sp_Albumtype(..)
+    , sp_albumtype_album
+    , sp_albumtype_single
+    , sp_albumtype_compilation
+    , sp_albumtype_unknown
+    , c_sp_album_is_loaded
+    , c_sp_album_is_available
+    , c_sp_album_artist
+    , c_sp_album_cover
+    , c_sp_album_name
+    , c_sp_album_year
+    , c_sp_album_type
+    , c_sp_album_add_ref
+    , c_sp_album_release
+) where
 
 import Foreign
 import Foreign.C.Types

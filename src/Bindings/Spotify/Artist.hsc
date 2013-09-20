@@ -1,5 +1,10 @@
-module Bindings.Spotify.Artist
-where
+module Bindings.Spotify.Artist (
+      c_sp_artist_name
+    , c_sp_artist_is_loaded
+    , c_sp_artist_portrait
+    , c_sp_artist_add_ref
+    , c_sp_artist_release
+) where
 
 import Foreign
 import Foreign.C.Types

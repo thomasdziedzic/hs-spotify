@@ -1,5 +1,6 @@
-module Bindings.Spotify.Misc
-where
+module Bindings.Spotify.Misc (
+      c_sp_build_id
+) where
 
 import Foreign.C.Types
 import Foreign.C.String

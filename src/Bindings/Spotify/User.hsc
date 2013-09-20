@@ -1,5 +1,15 @@
-module Bindings.Spotify.User
-where
+module Bindings.Spotify.User (
+      Sp_Relation_Type(..)
+    , sp_relation_type_unknown
+    , sp_relation_type_none
+    , sp_relation_type_unidirectional
+    , sp_relation_type_bidirectional
+    , c_sp_user_canonical_name
+    , c_sp_user_display_name
+    , c_sp_user_is_loaded
+    , c_sp_user_add_ref
+    , c_sp_user_release
+) where
 
 import Foreign
 import Foreign.C.Types
