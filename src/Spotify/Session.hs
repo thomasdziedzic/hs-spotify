@@ -219,8 +219,8 @@ sessionCreate sessionConfig = do
     sessionConfigPtr <- hs2cConfig sessionConfig
     sessionPtrPtr <- (malloc :: IO (Ptr (Ptr Sp_Session)))
     err <- c_sp_session_create sessionConfigPtr sessionPtrPtr
-    case err of
-        sp_error_ok -> do
+    if err == sp_error_ok
+        then do
             sessionPtr <- peek sessionPtrPtr
             return $ Right (Session sessionPtr)
-        _ -> return $ Left (wrapError err)
+        else return $ Left (wrapError err)
