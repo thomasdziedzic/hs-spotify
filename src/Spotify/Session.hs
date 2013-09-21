@@ -118,8 +118,8 @@ c2hsAudioBufferStats spAudioBufferStatsPtr = do
     return audioBufferStats
 
 hs2cCallbacks :: SessionCallbacks -> IO (Ptr Sp_Session_Callbacks)
-hs2cCallbacks callbacks = do
-    session_callbacks <- Sp_Session_Callbacks
+hs2cCallbacks sessionCallbacks = do
+    cSessionCallbacks <- Sp_Session_Callbacks
         <$> mkLoggedInCb cLoggedIn
         <*> mkLoggedOutCb cLoggedOut
         <*> mkMetadataUpdatedCb cMetadataUpdated
@@ -142,41 +142,41 @@ hs2cCallbacks callbacks = do
         <*> mkScrobbleErrorCb cScrobbleError
         <*> mkPrivateSessionModeChangedCb cPrivateSessionModeChanged
 
-    new session_callbacks
+    new cSessionCallbacks
   where
-    cLoggedIn sessionPtr err = (loggedIn callbacks) (Session sessionPtr) (wrapError err)
-    cLoggedOut sessionPtr = (loggedOut callbacks) (Session sessionPtr)
-    cMetadataUpdated sessionPtr = (metadataUpdated callbacks) (Session sessionPtr)
-    cConnectionError sessionPtr err = (connectionError callbacks) (Session sessionPtr) (wrapError err)
+    cLoggedIn sessionPtr err = (loggedIn sessionCallbacks) (Session sessionPtr) (wrapError err)
+    cLoggedOut sessionPtr = (loggedOut sessionCallbacks) (Session sessionPtr)
+    cMetadataUpdated sessionPtr = (metadataUpdated sessionCallbacks) (Session sessionPtr)
+    cConnectionError sessionPtr err = (connectionError sessionCallbacks) (Session sessionPtr) (wrapError err)
     cMessageToUser sessionPtr msgPtr = do
         msg <- peekCString msgPtr
-        (messageToUser callbacks) (Session sessionPtr) msg
-    cNotifyMainThread sessionPtr = (notifyMainThread callbacks) (Session sessionPtr)
+        (messageToUser sessionCallbacks) (Session sessionPtr) msg
+    cNotifyMainThread sessionPtr = (notifyMainThread sessionCallbacks) (Session sessionPtr)
     cMusicDelivery sessionPtr spAudioFormatPtr frames numFrames = do
         audioFormat <- c2hsAudioFormat spAudioFormatPtr
         frameList <- peekArray (fromIntegral numFrames) (castPtr frames)
-        framesRead <- (musicDelivery callbacks) (Session sessionPtr) audioFormat (B.pack frameList)
+        framesRead <- (musicDelivery sessionCallbacks) (Session sessionPtr) audioFormat (B.pack frameList)
         return . fromIntegral $ framesRead
-    cPlayTokenLost sessionPtr = (playTokenLost callbacks) (Session sessionPtr)
+    cPlayTokenLost sessionPtr = (playTokenLost sessionCallbacks) (Session sessionPtr)
     cLogMessage sessionPtr msgPtr = do
         msg <- peekCString msgPtr
-        (logMessage callbacks) (Session sessionPtr) msg
-    cEndOfTrack sessionPtr = (endOfTrack callbacks) (Session sessionPtr)
-    cStreamingError sessionPtr err = (streamingError callbacks) (Session sessionPtr) (wrapError err)
-    cUserinfoUpdated sessionPtr = (userinfoUpdated callbacks) (Session sessionPtr)
-    cStartPlayback sessionPtr = (startPlayback callbacks) (Session sessionPtr)
-    cStopPlayback sessionPtr = (stopPlayback callbacks) (Session sessionPtr)
+        (logMessage sessionCallbacks) (Session sessionPtr) msg
+    cEndOfTrack sessionPtr = (endOfTrack sessionCallbacks) (Session sessionPtr)
+    cStreamingError sessionPtr err = (streamingError sessionCallbacks) (Session sessionPtr) (wrapError err)
+    cUserinfoUpdated sessionPtr = (userinfoUpdated sessionCallbacks) (Session sessionPtr)
+    cStartPlayback sessionPtr = (startPlayback sessionCallbacks) (Session sessionPtr)
+    cStopPlayback sessionPtr = (stopPlayback sessionCallbacks) (Session sessionPtr)
     cGetAudioBufferStats sessionPtr spAudioBufferStatsPtr = do
         audioBufferStats <- c2hsAudioBufferStats spAudioBufferStatsPtr
-        (getAudioBufferStats callbacks) (Session sessionPtr) audioBufferStats
-    cOfflineStatusUpdated sessionPtr = (offlineStatusUpdated callbacks) (Session sessionPtr)
-    cOfflineError sessionPtr err = (offlineError callbacks) (Session sessionPtr) (wrapError err)
+        (getAudioBufferStats sessionCallbacks) (Session sessionPtr) audioBufferStats
+    cOfflineStatusUpdated sessionPtr = (offlineStatusUpdated sessionCallbacks) (Session sessionPtr)
+    cOfflineError sessionPtr err = (offlineError sessionCallbacks) (Session sessionPtr) (wrapError err)
     cCredentialsBlobUpdated sessionPtr blobPtr = do
         blob <- peekCString blobPtr
-        (credentialsBlobUpdated callbacks) (Session sessionPtr) blob
-    cConnectionstateUpdated sessionPtr = (connectionstateUpdated callbacks) (Session sessionPtr)
-    cScrobbleError sessionPtr err = (scrobbleError callbacks) (Session sessionPtr) (wrapError err)
-    cPrivateSessionModeChanged sessionPtr isPrivate = (privateSessionModeChanged callbacks) (Session sessionPtr) (toBool isPrivate)
+        (credentialsBlobUpdated sessionCallbacks) (Session sessionPtr) blob
+    cConnectionstateUpdated sessionPtr = (connectionstateUpdated sessionCallbacks) (Session sessionPtr)
+    cScrobbleError sessionPtr err = (scrobbleError sessionCallbacks) (Session sessionPtr) (wrapError err)
+    cPrivateSessionModeChanged sessionPtr isPrivate = (privateSessionModeChanged sessionCallbacks) (Session sessionPtr) (toBool isPrivate)
 
 hs2cConfig :: SessionConfig -> IO (Ptr Sp_Session_Config)
 hs2cConfig config = do
