@@ -76,7 +76,6 @@ data SessionConfig = SessionConfig
     , cacheLocation                :: FilePath
     , settingsLocation             :: FilePath
     , applicationKey               :: B.ByteString
-    , applicationKeySize           :: Int64
     , userAgent                    :: String
     , callbacks                    :: SessionCallbacks
     , userdata                     :: B.ByteString
