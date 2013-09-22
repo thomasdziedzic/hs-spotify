@@ -7,6 +7,8 @@ module Spotify.Session (
     , SessionCallbacks(..)
     , SessionConfig(..)
     , sessionCreate
+    , sessionLogin
+    , processEvents
 ) where
 
 import Bindings.Spotify.Session
@@ -224,6 +226,18 @@ sessionCreate sessionConfig = do
             return $ Right (Session sessionPtr)
         else
             return $ Left (wrapError err)
+
+sessionLogin :: Session -> String -> String -> Bool -> String -> IO (Maybe Error)
+sessionLogin (Session sessionPtr) username password rememberMe blob = do
+    cUsername <- newCString username
+    cPassword <- newCString password
+    cBlob <- newCString blob
+    err <- c_sp_session_login sessionPtr cUsername cPassword (fromBool rememberMe) cBlob
+    if err == sp_error_ok
+        then
+            return Nothing
+        else
+            return $ Just (wrapError err)
 
 processEvents :: Session -> IO (Either Error Int)
 processEvents (Session sessionPtr) = do
