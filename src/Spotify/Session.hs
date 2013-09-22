@@ -16,7 +16,6 @@ import Bindings.Spotify.Error
 import Spotify.Struct
 import Spotify.Error
 
-import Data.Int
 import qualified Data.ByteString.Lazy as B
 import Foreign.C.String (peekCString, newCString)
 import qualified Data.Map.Lazy as M
@@ -26,6 +25,7 @@ import Foreign.Storable
 import Foreign.Marshal.Utils (fromBool, toBool, new)
 import Foreign.Marshal.Alloc (malloc)
 import Control.Applicative ((<$>), (<*>))
+import Foreign.C.Types (CInt)
 
 newtype Version = Version { unVersion :: Int }
     deriving (Show)
@@ -222,4 +222,16 @@ sessionCreate sessionConfig = do
         then do
             sessionPtr <- peek sessionPtrPtr
             return $ Right (Session sessionPtr)
-        else return $ Left (wrapError err)
+        else
+            return $ Left (wrapError err)
+
+processEvents :: Session -> IO (Either Error Int)
+processEvents (Session sessionPtr) = do
+    nextTimeoutPtr <- (malloc :: IO (Ptr CInt))
+    err <- c_sp_session_process_events sessionPtr nextTimeoutPtr
+    if err == sp_error_ok
+        then do
+            nextTimeoutMs <- peek nextTimeoutPtr
+            return $ Right (fromIntegral nextTimeoutMs)
+        else
+            return $ Left (wrapError err)
