@@ -48,7 +48,7 @@ notify_main_thread_cb process_events_broadcast session_ptr = do
   putStrLn "in notify_main_thread callback"
   hFlush stdout
 
-music_delivery_cb :: MusicDeliveryCb
+music_delivery_cb :: Ptr Sp_Session -> Ptr Sp_AudioFormat -> Ptr () -> CInt -> IO CInt
 music_delivery_cb session_ptr audioformat_ptr frames_ptr num_frames = do
   putStrLn "in music_delivery_cb callback"
   hFlush stdout
@@ -91,7 +91,7 @@ stop_playback_cb session_ptr = do
   putStrLn "in stop_playback_cb callback"
   hFlush stdout
 
-get_audio_buffer_stats_cb :: GetAudioBufferStatsCb
+get_audio_buffer_stats_cb :: Ptr Sp_Session -> Ptr Sp_Audio_Buffer_Stats -> IO ()
 get_audio_buffer_stats_cb session_ptr audio_buffer_stats_ptr= do
   putStrLn "in get_audio_buffer_stats_cb callback"
   hFlush stdout
@@ -187,23 +187,23 @@ main = do
   session_callbacks_ptr <- new session_callbacks
 
   let session_config = Sp_Session_Config {
-        api_version                      = spotifyApiVersion
-      , cache_location                   = cachelocation
-      , settings_location                = cachelocation
-      , application_key                  = castPtr key_ptr
-      , application_key_size             = fromIntegral . BS.length $ key
-      , user_agent                       = userAgentCString
-      , callbacks                        = session_callbacks_ptr
-      , userdata                         = castPtr userAgentCString
-      , compress_playlists               = fromBool False
-      , dont_save_metadata_for_playlists = fromBool False
-      , initially_unload_playlists       = fromBool False
-      , device_id                        = userAgentCString
-      , proxy                            = emptyCString
-      , proxy_username                   = emptyCString
-      , proxy_password                   = emptyCString
-      , ca_certs_filename                = emptyCString
-      , tracefile                        = tracefilepath
+        sp_api_version                      = spotify_api_version
+      , sp_cache_location                   = cachelocation
+      , sp_settings_location                = cachelocation
+      , sp_application_key                  = castPtr key_ptr
+      , sp_application_key_size             = fromIntegral . BS.length $ key
+      , sp_user_agent                       = userAgentCString
+      , sp_callbacks                        = session_callbacks_ptr
+      , sp_userdata                         = castPtr userAgentCString
+      , sp_compress_playlists               = fromBool False
+      , sp_dont_save_metadata_for_playlists = fromBool False
+      , sp_initially_unload_playlists       = fromBool False
+      , sp_device_id                        = userAgentCString
+      , sp_proxy                            = emptyCString
+      , sp_proxy_username                   = emptyCString
+      , sp_proxy_password                   = emptyCString
+      , sp_ca_certs_filename                = emptyCString
+      , sp_tracefile                        = tracefilepath
       }
 
   session_config_ptr <- new session_config
