@@ -25,3 +25,7 @@ src/Bindings/Spotify/User.hs
 example/tracefile
 example/login
 example/high-login
+
+server/Client
+server/Server
+server/tracefile
