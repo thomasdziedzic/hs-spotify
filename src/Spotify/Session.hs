@@ -1,7 +1,5 @@
 module Spotify.Session (
-      Version(..)
-    , spotifyApiVersion
-    , SampleType(..)
+      SampleType(..)
     , AudioFormat(..)
     , AudioBufferStats(..)
     , SessionCallbacks(..)
@@ -24,16 +22,10 @@ import qualified Data.Map.Lazy as M
 import Foreign.Ptr (Ptr, castPtr)
 import Foreign.Marshal.Array (peekArray, newArray)
 import Foreign.Storable
-import Foreign.Marshal.Utils (fromBool, toBool, new)
+import Foreign.Marshal.Utils (fromBool, toBool, new, maybeNew)
 import Foreign.Marshal.Alloc (malloc)
 import Control.Applicative ((<$>), (<*>))
 import Foreign.C.Types (CInt)
-
-newtype Version = Version { unVersion :: Int }
-    deriving (Show)
-
-spotifyApiVersion :: Version
-spotifyApiVersion = Version (fromIntegral spotify_api_version)
 
 data SampleType = Int16NativeEndian
     deriving (Show)
@@ -74,8 +66,7 @@ data SessionCallbacks = SessionCallbacks
     }
 
 data SessionConfig = SessionConfig
-    { apiVersion                   :: Version
-    , cacheLocation                :: FilePath
+    { cacheLocation                :: FilePath
     , settingsLocation             :: FilePath
     , applicationKey               :: B.ByteString
     , userAgent                    :: String
@@ -194,7 +185,7 @@ hs2cConfig config = do
     cCaCertsFilename <- newCString . caCertsFilename $ config
     cTracefile <- newCString . tracefile $ config
     let session_config = Sp_Session_Config {
-          sp_api_version                      = fromIntegral . unVersion . apiVersion $ config
+          sp_api_version                      = spotify_api_version
         , sp_cache_location                   = cCacheLocation
         , sp_settings_location                = cSettingsLocation
         , sp_application_key                  = castPtr cApplicationKey
@@ -227,11 +218,12 @@ sessionCreate sessionConfig = do
         else
             return $ Left (wrapError err)
 
-sessionLogin :: Session -> String -> String -> Bool -> String -> IO (Maybe Error)
+sessionLogin :: Session -> String -> String -> Bool -> Maybe String -> IO (Maybe Error)
 sessionLogin (Session sessionPtr) username password rememberMe blob = do
     cUsername <- newCString username
     cPassword <- newCString password
-    cBlob <- newCString blob
+    cBlob <- maybeNew newCString blob
+
     err <- c_sp_session_login sessionPtr cUsername cPassword (fromBool rememberMe) cBlob
     if err == sp_error_ok
         then
