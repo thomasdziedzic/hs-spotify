@@ -4,11 +4,12 @@ import Control.Concurrent (threadDelay, forkIO)
 import Control.Concurrent.Chan
 import Control.Monad (forever)
 import Data.Binary (decode)
-import Network (listenOn, PortID(..), accept)
+import Network (listenOn, PortID(..), accept, Socket)
 import Network.Socket (close)
 import System.IO (hClose)
 import qualified Data.ByteString.Lazy.Char8 as C
 import qualified Data.ByteString.Lazy as B
+import GHC.IO.Handle (Handle)
 
 import qualified Actions as A
 import qualified NetworkActions as NA
@@ -72,26 +73,36 @@ main = do
 
   forever $ process_action_queue action_queue
 
--- TODO make listen_for_actions handle multiple handles
 listen_for_actions :: Session -> Chan A.Action -> IO ()
 listen_for_actions session action_queue = do
     socket <- listenOn (PortNumber 3000)
+
+    listen_for_actions' socket session action_queue
+
+listen_for_actions' :: Socket -> Session -> Chan A.Action -> IO ()
+listen_for_actions' socket session action_queue = do
     (handle, _, _) <- accept socket
+
+    putStrLn "accepted socket"
+
+    _ <- forkIO $ handleRequest handle session action_queue
+
+    listen_for_actions' socket session action_queue
+
+handleRequest :: Handle -> Session -> Chan A.Action -> IO ()
+handleRequest handle session actionQueue = do
     request <- C.hGetContents handle
 
     putStrLn "received data:"
     let actionToTake = (decode request :: NA.NetworkAction)
     putStrLn . show $ actionToTake
     case actionToTake of
-        NA.Login username password -> writeChan action_queue (A.Login session (C.unpack username) (C.unpack password))
+        NA.Login username password -> writeChan actionQueue (A.Login session (C.unpack username) (C.unpack password))
     putStrLn "sending back"
 
     C.hPut handle "msg received"
 
     hClose handle
-    close socket
-
-
 
 process_action_queue :: Chan A.Action -> IO ()
 process_action_queue queue = readChan queue >>= process_action queue
