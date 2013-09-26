@@ -9,3 +9,6 @@ type Password = String
 
 data Action = ProcessEvents Session
             | Login Session Username Password
+            | Load Session String
+            | Play Session
+            | Stop Session

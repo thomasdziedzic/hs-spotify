@@ -19,6 +19,7 @@ import Callbacks
 
 import Spotify.Struct
 import Spotify.Session
+import Spotify.Link
 
 main :: IO ()
 main = do
@@ -105,6 +106,9 @@ handleRequest handle session actionQueue = do
     putStrLn . show $ actionToTake
     case actionToTake of
         NA.Login username password -> writeChan actionQueue (A.Login session (C.unpack username) (C.unpack password))
+        NA.Load link -> writeChan actionQueue (A.Load session (C.unpack link))
+        NA.Play -> writeChan actionQueue (A.Play session)
+        NA.Stop -> writeChan actionQueue (A.Stop session)
     putStrLn "sending back"
 
     C.hPut handle "msg received"
@@ -130,6 +134,24 @@ process_action _ (A.Login session username password) = do
     -- TODO handle sessionLogin err
     -- TODO add rememberMe and blob to the login action
     _ <- sessionLogin session username password False Nothing
+    return ()
+
+process_action _ (A.Load session url) = do
+    link <- linkCreateFromString url
+    -- TODO handle case where we get back nothing signifying the link was invalid
+    (Just track) <- linkAsTrack link
+    -- TODO handle errors
+    _ <- sessionPlayerLoad session track
+    return ()
+
+process_action _ (A.Play session) = do
+    -- TODO handle errors
+    _ <- sessionPlayerPlay session True
+    return ()
+
+process_action _ (A.Stop session) = do
+    -- TODO handle errors
+    _ <- sessionPlayerPlay session False
     return ()
 
 processEventScheduler :: Broadcast () -> Broadcast Integer -> Session -> Chan A.Action -> IO ()
