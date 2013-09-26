@@ -37,6 +37,7 @@ Library
     Bindings.Spotify.User
 
     Spotify.Error
+    Spotify.Link
     Spotify.Struct
     Spotify.Session
   hs-source-dirs:
