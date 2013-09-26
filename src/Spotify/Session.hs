@@ -7,6 +7,8 @@ module Spotify.Session (
     , sessionCreate
     , sessionLogin
     , processEvents
+    , sessionPlayerLoad
+    , sessionPlayerPlay
 ) where
 
 import Bindings.Spotify.Session
@@ -241,3 +243,21 @@ processEvents (Session sessionPtr) = do
             return $ Right (fromIntegral nextTimeoutMs)
         else
             return $ Left (wrapError err)
+
+sessionPlayerLoad :: Session -> Track -> IO (Maybe Error)
+sessionPlayerLoad (Session sessionPtr) (Track trackPtr) = do
+    spError <- c_sp_session_player_load sessionPtr trackPtr
+    if spError == sp_error_ok
+        then
+            return Nothing
+        else
+            return $ Just (wrapError spError)
+
+sessionPlayerPlay :: Session -> Bool -> IO (Maybe Error)
+sessionPlayerPlay (Session sessionPtr) play = do
+    spError <- c_sp_session_player_play sessionPtr (fromBool play)
+    if spError == sp_error_ok
+        then
+            return Nothing
+        else
+            return $ Just (wrapError spError)
