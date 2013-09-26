@@ -10,6 +10,8 @@ import System.IO (hClose)
 import qualified Data.ByteString.Lazy.Char8 as C
 import qualified Data.ByteString.Lazy as B
 import GHC.IO.Handle (Handle)
+import Control.Concurrent.Broadcast (Broadcast)
+import qualified Control.Concurrent.Broadcast as Broadcast
 
 import qualified Actions as A
 import qualified NetworkActions as NA
@@ -21,6 +23,8 @@ import Spotify.Session
 main :: IO ()
 main = do
   action_queue <- newChan
+  scheduleProcess <- Broadcast.new
+  processComplete <- Broadcast.new
 
   let sessionCallbacks = SessionCallbacks {
       loggedIn                  = loggedInCb
@@ -28,7 +32,7 @@ main = do
     , metadataUpdated           = metadataUpdatedCb
     , connectionError           = connectionErrorCb
     , messageToUser             = messageToUserCb
-    , notifyMainThread          = notifyMainThreadCb action_queue
+    , notifyMainThread          = notifyMainThreadCb scheduleProcess
     , musicDelivery             = musicDeliveryCb
     , playTokenLost             = playTokenLostCb
     , logMessage                = logMessageCb
@@ -69,9 +73,12 @@ main = do
   -- TODO handle error
   (Right session) <- sessionCreate sessionConfig
 
+  -- TODO use simple server package
   _ <- forkIO (listen_for_actions session action_queue)
 
-  forever $ process_action_queue action_queue
+  _ <- forkIO $ processEventScheduler scheduleProcess processComplete session action_queue
+
+  forever $ process_action_queue action_queue processComplete
 
 listen_for_actions :: Session -> Chan A.Action -> IO ()
 listen_for_actions session action_queue = do
@@ -104,12 +111,11 @@ handleRequest handle session actionQueue = do
 
     hClose handle
 
-process_action_queue :: Chan A.Action -> IO ()
-process_action_queue queue = readChan queue >>= process_action queue
+process_action_queue :: Chan A.Action -> Broadcast Integer -> IO ()
+process_action_queue queue processDone = readChan queue >>= process_action processDone
 
--- TODO processing ProcessEvents should reset the process_event_scheduler delay
-process_action :: Chan A.Action -> A.Action -> IO ()
-process_action action_queue (A.ProcessEvents session) = do
+process_action :: Broadcast Integer -> A.Action -> IO ()
+process_action processDone (A.ProcessEvents session) = do
     -- TODO handle error
     (Right nextTimeoutMs) <- processEvents session
 
@@ -117,7 +123,7 @@ process_action action_queue (A.ProcessEvents session) = do
         then
             return()
         else do
-            _ <- forkIO $ process_event_scheduler nextTimeoutMs session action_queue
+            Broadcast.broadcast processDone (fromIntegral nextTimeoutMs)
             return ()
 
 process_action _ (A.Login session username password) = do
@@ -126,10 +132,23 @@ process_action _ (A.Login session username password) = do
     _ <- sessionLogin session username password False Nothing
     return ()
 
--- TODO process_event_scheduler should be constantly running in the background
-process_event_scheduler :: Int -> Session -> Chan A.Action -> IO ()
-process_event_scheduler next_delay_ms session queue = do
-    threadDelay next_delay_us
-    writeChan queue (A.ProcessEvents session)
+processEventScheduler :: Broadcast () -> Broadcast Integer -> Session -> Chan A.Action -> IO ()
+processEventScheduler scheduleProcess processDone session queue = do
+    Broadcast.listen scheduleProcess
+    queueProcessEvent scheduleProcess processDone session queue
+
+processEventScheduler' :: Broadcast () -> Broadcast Integer -> Integer -> Session -> Chan A.Action -> IO ()
+processEventScheduler' scheduleProcess processDone timeoutMs session queue = do
+    Broadcast.listenTimeout scheduleProcess timeoutUs
+    queueProcessEvent scheduleProcess processDone session queue
   where
-    next_delay_us = next_delay_ms * 1000
+    timeoutUs = timeoutMs * 1000
+
+queueProcessEvent :: Broadcast () -> Broadcast Integer -> Session -> Chan A.Action -> IO ()
+queueProcessEvent scheduleProcess processDone session queue = do
+    writeChan queue (A.ProcessEvents session)
+    timeoutMs <- Broadcast.listen processDone
+    Broadcast.silence processDone
+    Broadcast.silence scheduleProcess
+
+    processEventScheduler' scheduleProcess processDone timeoutMs session queue

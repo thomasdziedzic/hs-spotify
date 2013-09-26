@@ -28,6 +28,8 @@ import Spotify.Session
 
 import Control.Concurrent.Chan (Chan, writeChan)
 import qualified Data.ByteString.Lazy as B
+import Control.Concurrent.Broadcast (Broadcast)
+import qualified Control.Concurrent.Broadcast as Broadcast
 
 import Actions
 
@@ -51,10 +53,9 @@ messageToUserCb :: Session -> String -> IO ()
 messageToUserCb session msg = do
   putStrLn $ "in message_to_user callback with message: " ++ msg
 
-notifyMainThreadCb :: Chan Action -> Session -> IO ()
-notifyMainThreadCb queue session = do
-  writeChan queue (ProcessEvents session)
-
+notifyMainThreadCb :: Broadcast () -> Session -> IO ()
+notifyMainThreadCb processEvents session = do
+  Broadcast.broadcast processEvents ()
   putStrLn "in notify_main_thread callback"
 
 musicDeliveryCb :: Session -> AudioFormat -> B.ByteString -> IO Int

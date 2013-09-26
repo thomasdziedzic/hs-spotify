@@ -174,6 +174,7 @@ delay_process_events' process_events_broadcast timeout session = do
 
 process_events :: Broadcast () -> Session -> IO ()
 process_events process_events_broadcast session = do
+  -- TODO error handling
   (Right nextTimeout) <- processEvents session
 
   let delay_us = (1000 * fromIntegral nextTimeout)
