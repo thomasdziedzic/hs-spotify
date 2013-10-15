@@ -58,10 +58,11 @@ notifyMainThreadCb processEvents session = do
   Broadcast.broadcast processEvents ()
   putStrLn "in notify_main_thread callback"
 
-musicDeliveryCb :: Session -> AudioFormat -> B.ByteString -> IO Int
-musicDeliveryCb session audioformat frames = do
+musicDeliveryCb :: Chan B.ByteString -> Session -> AudioFormat -> B.ByteString -> IO Int
+musicDeliveryCb soundQueue session audioformat frames = do
   putStrLn "in music_delivery_cb callback"
-  return 1
+  writeChan soundQueue frames
+  return . fromIntegral $ B.length frames
 
 playTokenLostCb :: Session -> IO ()
 playTokenLostCb session = do

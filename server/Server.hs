@@ -12,6 +12,7 @@ import qualified Data.ByteString.Lazy as B
 import GHC.IO.Handle (Handle)
 import Control.Concurrent.Broadcast (Broadcast)
 import qualified Control.Concurrent.Broadcast as Broadcast
+import Sound.Pulse.Simple
 
 import qualified Actions as A
 import qualified NetworkActions as NA
@@ -23,9 +24,12 @@ import Spotify.Link
 
 main :: IO ()
 main = do
+  paHandle <- simpleNew Nothing "example" Play Nothing "this is an example application" (SampleSpec (S16 LittleEndian) 44100 2) Nothing Nothing
+
   action_queue <- newChan
   scheduleProcess <- Broadcast.new
   processComplete <- Broadcast.new
+  soundQueue <- newChan
 
   let sessionCallbacks = SessionCallbacks {
       loggedIn                  = loggedInCb
@@ -34,7 +38,7 @@ main = do
     , connectionError           = connectionErrorCb
     , messageToUser             = messageToUserCb
     , notifyMainThread          = notifyMainThreadCb scheduleProcess
-    , musicDelivery             = musicDeliveryCb
+    , musicDelivery             = musicDeliveryCb soundQueue
     , playTokenLost             = playTokenLostCb
     , logMessage                = logMessageCb
     , endOfTrack                = endOfTrackCb
@@ -79,7 +83,15 @@ main = do
 
   _ <- forkIO $ processEventScheduler scheduleProcess processComplete session action_queue
 
+  _ <- forkIO $ sendToSound paHandle soundQueue
+
   forever $ process_action_queue action_queue processComplete
+
+sendToSound :: Simple -> Chan B.ByteString -> IO ()
+sendToSound paHandle soundQueue = do
+    frames <- readChan soundQueue
+    simpleWriteRaw paHandle (B.toStrict frames)
+    sendToSound paHandle soundQueue
 
 listen_for_actions :: Session -> Chan A.Action -> IO ()
 listen_for_actions session action_queue = do
