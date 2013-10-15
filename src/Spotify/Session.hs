@@ -32,6 +32,10 @@ import Foreign.C.Types (CInt)
 data SampleType = Int16NativeEndian
     deriving (Show)
 
+-- returns the number of bytes in this sample size
+sampleTypeSize :: Num a => SampleType -> a
+sampleTypeSize Int16NativeEndian = 2
+
 data AudioFormat = AudioFormat
     { sampleType :: SampleType
     , sampleRate :: Int
@@ -148,7 +152,9 @@ hs2cCallbacks sessionCallbacks = do
     cNotifyMainThread sessionPtr = (notifyMainThread sessionCallbacks) (Session sessionPtr)
     cMusicDelivery sessionPtr spAudioFormatPtr frames numFrames = do
         audioFormat <- c2hsAudioFormat spAudioFormatPtr
-        frameList <- peekArray (fromIntegral numFrames) (castPtr frames)
+        let sampleTypeBytes = sampleTypeSize $ sampleType audioFormat
+        let numChannels = channels audioFormat
+        frameList <- peekArray ((fromIntegral numFrames) * sampleTypeBytes * numChannels) (castPtr frames)
         framesRead <- (musicDelivery sessionCallbacks) (Session sessionPtr) audioFormat (B.pack frameList)
         return . fromIntegral $ framesRead
     cPlayTokenLost sessionPtr = (playTokenLost sessionCallbacks) (Session sessionPtr)
